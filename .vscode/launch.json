@@ -7,7 +7,20 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Podium Slack",
+      "name": "API",
+      "program": "${workspaceRoot}/api/node_modules/.bin/sls",
+      "args": ["offline", "start"],
+      "outFiles": ["${workspaceRoot}/api/.webpack/service/*"],
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}/api",
+      "localRoot": "${workspaceRoot}/api",
+      "smartStep": true,
+      "protocol": "inspector"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Slack",
       "program": "${workspaceRoot}/slack/node_modules/.bin/sls",
       "args": ["offline", "start"],
       "outFiles": ["${workspaceRoot}/slack/.webpack/service/*"],
@@ -16,6 +29,12 @@
       "localRoot": "${workspaceRoot}/slack",
       "smartStep": true,
       "protocol": "inspector"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "API/Slack",
+      "configurations": ["API", "Slack"]
     }
   ]
 }
