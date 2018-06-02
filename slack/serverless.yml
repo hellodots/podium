@@ -16,8 +16,6 @@ functions:
     handler: index.handler
     name: ${self:service}-app-${self:provider.stage}
     description: Slack app
-    tags:
-      environment: ${self:provider.stage}
     events:
       - http:
           path: slack/{any+}
