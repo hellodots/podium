@@ -1,0 +1,29 @@
+service:
+  name: podium-slack
+
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+
+functions:
+  slack:
+    handler: index.handler
+    name: ${self:service}-app-${self:provider.stage}
+    description: Slack app
+    tags:
+      environment: ${self:provider.stage}
+    events:
+      - http:
+          path: slack/{any+}
+          method: ANY
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+    packager: 'npm'
