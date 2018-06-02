@@ -1,5 +1,5 @@
 service:
-  name: podium-slack
+  name: podium-api
 
 plugins:
   - serverless-webpack
@@ -12,13 +12,13 @@ provider:
   region: us-east-1
 
 functions:
-  slack:
+  api:
     handler: index.handler
     name: ${self:service}-app-${self:provider.stage}
-    description: Slack app
+    description: Podium API
     events:
       - http:
-          path: slack/{any+}
+          path: api/{any+}
           method: ANY
 
 custom:
@@ -26,5 +26,3 @@ custom:
     webpackConfig: ./webpack.config.js
     includeModules: true
     packager: 'npm'
-  serverless-offline:
-    port: 5000

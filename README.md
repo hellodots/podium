@@ -20,6 +20,12 @@ In the app folder run the command:
 npm install
 ```
 
+In the api folder run the command:
+
+```
+serverless dynamodb install
+```
+
 ## Run locally
 
 In the app folder run the command:
