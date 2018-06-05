@@ -26,6 +26,7 @@ functions:
       - sns: ${self:custom.controllerTopic}
     environment: 
       API_BASE: ${self:custom.apiBase}
+      SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
   router:
     handler: app/router.handler
     name: ${self:service}-router-${self:provider.stage}
@@ -57,4 +58,5 @@ custom:
   awsAccountId: ${file(env/${self:provider.stage}.yml):AWS_ACCOUNT_ID}
   controllerTopic: slackController
   snsTopicArn: arn:aws:sns:${self:provider.region}:${self:custom.awsAccountId}
+  slackBotToken: ${file(env/${self:provider.stage}.yml):SLACK_BOT_TOKEN}
   slackVerificationToken: ${file(env/${self:provider.stage}.yml):SLACK_VERIFICATION_TOKEN}

@@ -1,4 +1,5 @@
 import { help } from "./commands/help";
+import { start } from "./commands/start";
 
 export const handler = async (event, context) => {
   const message = JSON.parse(event.Records[0].Sns.Message);
@@ -18,7 +19,7 @@ export const handler = async (event, context) => {
   let req;
   switch (text) {
     case "start":
-      // TODO: start challenge function
+      req = start(channelId, teamId, triggerId);
       break;
     case "score":
       // TODO: start challenge function
