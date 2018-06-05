@@ -3,6 +3,7 @@ service:
 
 plugins:
   - serverless-webpack
+  - serverless-offline-sns
   - serverless-offline
 
 provider:
@@ -10,22 +11,50 @@ provider:
   runtime: nodejs8.10
   stage: ${opt:stage, 'dev'}
   region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "sns:Publish"
+      Resource: "*"
 
 functions:
-  slack:
-    handler: index.handler
-    name: ${self:service}-app-${self:provider.stage}
-    description: Slack app
+  controller:
+    handler: app/controller.handler
+    name: ${self:service}-controller-${self:provider.stage}
+    description: Slack controller
+    events:
+      - sns: ${self:custom.controllerTopic}
+    environment: 
+      API_BASE: ${self:custom.apiBase}
+  router:
+    handler: app/router.handler
+    name: ${self:service}-router-${self:provider.stage}
+    description: Slack router
     events:
       - http:
           path: slack/{any+}
-          method: ANY
-    environment: ${file(env.yml):${self:provider.stage}}
+          method: POST
+    environment: 
+      AWS_SNS_ARN: ${self:custom.snsTopicArn}
+      CONTROLLER_TOPIC: ${self:custom.controllerTopic}
+      SLACK_VERIFICATION_TOKEN: ${self:custom.slackVerificationToken}
 
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: true
+    includeModules: 
+      forceExclude:
+        - aws-sdk
     packager: 'npm'
+  serverless-offline-sns:
+    port: 5002
+    debug: false
   serverless-offline:
     port: 5000
+
+  # Variables
+  apiBase: ${file(env/${self:provider.stage}.yml):API_BASE}
+  awsAccountId: ${file(env/${self:provider.stage}.yml):AWS_ACCOUNT_ID}
+  controllerTopic: slackController
+  snsTopicArn: arn:aws:sns:${self:provider.region}:${self:custom.awsAccountId}
+  slackVerificationToken: ${file(env/${self:provider.stage}.yml):SLACK_VERIFICATION_TOKEN}
