@@ -4,6 +4,7 @@
   "description": "Let's start a challenge!",
   "dependencies": {
     "@slack/client": "^4.2.2",
+    "@slack/interactive-messages": "^0.4.0",
     "axios": "^0.18.0",
     "babel-runtime": "^6.26.0",
     "body-parser": "^1.18.3",

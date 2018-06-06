@@ -6,7 +6,7 @@ export const start = (channelId, teamId, triggerId) => {
   const message = {
     trigger_id: triggerId,
     dialog: {
-      callback_id: "start-dialog",
+      callback_id: "start_submission",
       title: "Start a challenge",
       submit_label: "Start",
       elements: [

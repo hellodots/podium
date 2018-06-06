@@ -1,6 +1,7 @@
-import { help } from "./commands/help";
-import { start } from "./commands/start";
+import { help } from "../commands/help";
+import { start } from "../commands/start";
 
+// Commands handler
 export const handler = async (event, context) => {
   const message = JSON.parse(event.Records[0].Sns.Message);
 

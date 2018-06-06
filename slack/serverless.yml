@@ -18,26 +18,47 @@ provider:
       Resource: "*"
 
 functions:
-  controller:
-    handler: app/controller.handler
-    name: ${self:service}-controller-${self:provider.stage}
-    description: Slack controller
+  command-controller:
+    handler: app/controllers/commandController.handler
+    name: ${self:service}-command-controller-${self:provider.stage}
+    description: Slack command controller
     events:
-      - sns: ${self:custom.controllerTopic}
+      - sns: ${self:custom.commandControllerTopic}
     environment: 
       API_BASE: ${self:custom.apiBase}
       SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
-  router:
-    handler: app/router.handler
-    name: ${self:service}-router-${self:provider.stage}
-    description: Slack router
+  command-router:
+    handler: app/routers/commandRouter.handler
+    name: ${self:service}-command-router-${self:provider.stage}
+    description: Slack command router
     events:
       - http:
-          path: slack/{any+}
+          path: slack/commands
           method: POST
     environment: 
       AWS_SNS_ARN: ${self:custom.snsTopicArn}
-      CONTROLLER_TOPIC: ${self:custom.controllerTopic}
+      COMMAND_CONTROLLER_TOPIC: ${self:custom.commandControllerTopic}
+      SLACK_VERIFICATION_TOKEN: ${self:custom.slackVerificationToken}
+  action-controller:
+    handler: app/controllers/actionController.handler
+    name: ${self:service}-action-controller-${self:provider.stage}
+    description: Slack action controller
+    events:
+      - sns: ${self:custom.actionControllerTopic}
+    environment: 
+      API_BASE: ${self:custom.apiBase}
+      SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
+  action-router:
+    handler: app/routers/actionRouter.handler
+    name: ${self:service}-action-router-${self:provider.stage}
+    description: Slack router
+    events:
+      - http:
+          path: slack/actions
+          method: POST
+    environment: 
+      AWS_SNS_ARN: ${self:custom.snsTopicArn}
+      ACTION_CONTROLLER_TOPIC: ${self:custom.actionControllerTopic}
       SLACK_VERIFICATION_TOKEN: ${self:custom.slackVerificationToken}
 
 custom:
@@ -54,9 +75,17 @@ custom:
     port: 5000
 
   # Variables
+  # API
   apiBase: ${file(env/${self:provider.stage}.yml):API_BASE}
+
+  # AWS
   awsAccountId: ${file(env/${self:provider.stage}.yml):AWS_ACCOUNT_ID}
-  controllerTopic: slackController
   snsTopicArn: arn:aws:sns:${self:provider.region}:${self:custom.awsAccountId}
+
+  # Topics
+  actionControllerTopic: actionController
+  commandControllerTopic: commandController
+  
+  # Slack
   slackBotToken: ${file(env/${self:provider.stage}.yml):SLACK_BOT_TOKEN}
   slackVerificationToken: ${file(env/${self:provider.stage}.yml):SLACK_VERIFICATION_TOKEN}
