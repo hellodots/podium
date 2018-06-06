@@ -3,6 +3,7 @@ service:
 
 plugins:
   - serverless-webpack
+  - serverless-offline-sns
   - serverless-offline
 
 provider:
@@ -10,21 +11,81 @@ provider:
   runtime: nodejs8.10
   stage: ${opt:stage, 'dev'}
   region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "sns:Publish"
+      Resource: "*"
 
 functions:
-  slack:
-    handler: index.handler
-    name: ${self:service}-app-${self:provider.stage}
-    description: Slack app
+  command-controller:
+    handler: app/controllers/commandController.handler
+    name: ${self:service}-command-controller-${self:provider.stage}
+    description: Slack command controller
+    events:
+      - sns: ${self:custom.commandControllerTopic}
+    environment: 
+      API_BASE: ${self:custom.apiBase}
+      SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
+  command-router:
+    handler: app/routers/commandRouter.handler
+    name: ${self:service}-command-router-${self:provider.stage}
+    description: Slack command router
     events:
       - http:
-          path: slack/{any+}
-          method: ANY
+          path: slack/commands
+          method: POST
+    environment: 
+      AWS_SNS_ARN: ${self:custom.snsTopicArn}
+      COMMAND_CONTROLLER_TOPIC: ${self:custom.commandControllerTopic}
+      SLACK_VERIFICATION_TOKEN: ${self:custom.slackVerificationToken}
+  action-controller:
+    handler: app/controllers/actionController.handler
+    name: ${self:service}-action-controller-${self:provider.stage}
+    description: Slack action controller
+    events:
+      - sns: ${self:custom.actionControllerTopic}
+    environment: 
+      API_BASE: ${self:custom.apiBase}
+      SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
+  action-router:
+    handler: app/routers/actionRouter.handler
+    name: ${self:service}-action-router-${self:provider.stage}
+    description: Slack router
+    events:
+      - http:
+          path: slack/actions
+          method: POST
+    environment: 
+      AWS_SNS_ARN: ${self:custom.snsTopicArn}
+      ACTION_CONTROLLER_TOPIC: ${self:custom.actionControllerTopic}
+      SLACK_VERIFICATION_TOKEN: ${self:custom.slackVerificationToken}
 
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: true
+    includeModules: 
+      forceExclude:
+        - aws-sdk
     packager: 'npm'
+  serverless-offline-sns:
+    port: 5002
+    debug: false
   serverless-offline:
     port: 5000
+
+  # Variables
+  # API
+  apiBase: ${file(env/${self:provider.stage}.yml):API_BASE}
+
+  # AWS
+  awsAccountId: ${file(env/${self:provider.stage}.yml):AWS_ACCOUNT_ID}
+  snsTopicArn: arn:aws:sns:${self:provider.region}:${self:custom.awsAccountId}
+
+  # Topics
+  actionControllerTopic: actionController
+  commandControllerTopic: commandController
+  
+  # Slack
+  slackBotToken: ${file(env/${self:provider.stage}.yml):SLACK_BOT_TOKEN}
+  slackVerificationToken: ${file(env/${self:provider.stage}.yml):SLACK_VERIFICATION_TOKEN}
