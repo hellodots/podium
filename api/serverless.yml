@@ -13,8 +13,8 @@ provider:
 
 functions:
   api:
-    handler: index.handler
-    name: ${self:service}-app-${self:provider.stage}
+    handler: app/router.handler
+    name: ${self:service}-api-${self:provider.stage}
     description: Podium API
     events:
       - http:

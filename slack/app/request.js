@@ -36,6 +36,16 @@ export class APIRequest extends Request {
   post(url, data = {}, params = {}) {
     return super.post(`${this.baseURL}${url}`, data, params);
   }
+
+  createChallenge(channelId, teamId, userId, metric, duration) {
+    return this.post("challenge", {
+      channelId,
+      teamId,
+      userId,
+      metric,
+      duration
+    });
+  }
 }
 
 export const apiRequestUtil = new APIRequest(axios, process.env.API_BASE);
