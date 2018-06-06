@@ -3,6 +3,7 @@ service:
 
 plugins:
   - serverless-webpack
+  - serverless-dynamodb-local
   - serverless-offline
 
 provider:
@@ -10,6 +11,19 @@ provider:
   runtime: nodejs8.10
   stage: ${opt:stage, 'dev'}
   region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "*"
+  environment:
+    ACTIVITY_TABLE: ${self:service}-activity-table-${self:provider.stage}
+    CHALLENGE_TABLE: ${self:service}-challenge-table-${self:provider.stage}
 
 functions:
   api:
@@ -21,8 +35,60 @@ functions:
           path: api/{any+}
           method: ANY
 
+resources:
+  Resources:
+    ActivityTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: challengeId
+            AttributeType: S
+          -
+            AttributeName: time
+            AttributeType: N
+        KeySchema:
+          -
+            AttributeName: challengeId
+            KeyType: HASH
+          -
+            AttributeName: time
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.ACTIVITY_TABLE}
+    ChallengeTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: teamChannelId
+            AttributeType: S
+          -
+            AttributeName: challengeId
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: teamChannelId
+            KeyType: HASH
+          -
+            AttributeName: challengeId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.CHALLENGE_TABLE}
+
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: true
+    includeModules: 
+      forceExclude:
+        - aws-sdk
     packager: 'npm'
+  dynamodb:
+    start:
+      migrate: true

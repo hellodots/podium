@@ -11,6 +11,7 @@
     "source-map-support": "^0.5.6"
   },
   "devDependencies": {
+    "aws-sdk": "^2.252.1",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-source-map-support": "^2.0.1",
@@ -19,6 +20,7 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-3": "^6.24.1",
     "serverless": "^1.27.3",
+    "serverless-dynamodb-local": "^0.2.30",
     "serverless-offline": "^3.25.1",
     "serverless-webpack": "^5.1.5",
     "webpack": "^4.10.2",

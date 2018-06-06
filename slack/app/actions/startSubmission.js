@@ -24,7 +24,7 @@ export const startSubmission = async (
     return chatUtil.postEphemeral({
       channel: channelId,
       user: userId,
-      text: error.message
+      text: error.response.data
     });
   }
 
