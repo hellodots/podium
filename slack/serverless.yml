@@ -16,7 +16,7 @@ provider:
       Action:
         - "sns:Publish"
       Resource: "*"
-
+  
 functions:
   command-controller:
     handler: app/controllers/commandController.handler

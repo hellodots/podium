@@ -1,6 +1,6 @@
-import { createChallenge } from "../actions/createChallenge";
+import { startSubmission } from "../actions/startSubmission";
 
-export const handler = async (event, context) => {
+export const handler = async (event, context, callback) => {
   const message = JSON.parse(event.Records[0].Sns.Message);
 
   // Parse message
@@ -12,7 +12,7 @@ export const handler = async (event, context) => {
   let req;
   switch (callbackId) {
     case "start_submission":
-      req = createChallenge(channelId, teamId, userId, submission);
+      req = startSubmission(channelId, teamId, userId, submission);
       break;
     default:
       console.log("Invalid event callback id");
@@ -20,9 +20,13 @@ export const handler = async (event, context) => {
   }
 
   // Send message to Slack
+  let res;
   try {
-    const res = await req;
+    res = await req;
   } catch (error) {
     console.log(error);
+    callback(error);
+    return;
   }
+  return callback(null, "Success");
 };

@@ -16,14 +16,6 @@ export const start = (channelId, teamId, triggerId) => {
           name: "metric",
           hint: "What metric would you like to track?",
           placeholder: "eg: Deals created"
-        },
-        {
-          type: "text",
-          subtype: "number",
-          label: "Duration (days)",
-          name: "duration",
-          hint: "How long should the challenge last?",
-          placeholder: "eg: 14"
         }
       ]
     }
