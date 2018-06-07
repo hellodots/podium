@@ -1,7 +1,7 @@
 import { Challenge } from "../models/challenge";
 
 export class ChallengeView {
-  async create(req, res) {
+  static async create(req, res) {
     const { channelId, teamId, userId, metric } = req.body;
 
     const teamChannelId = `${teamId}-${channelId}`;
