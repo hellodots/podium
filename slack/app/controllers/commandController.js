@@ -36,12 +36,10 @@ export const handler = async (event, context, callback) => {
   }
 
   // Send message to Slack
-  let res;
   try {
-    res = await req;
+    const res = await req;
+    return callback(null, res);
   } catch (error) {
-    console.log(error);
-    callback(error);
+    return callback(error);
   }
-  return callback(null, "Success");
 };

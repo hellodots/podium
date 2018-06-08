@@ -10,29 +10,28 @@ export const startSubmission = async (
   // TODO: Check for existing challenge
 
   // Post to create challenge
-  let challenge;
   try {
-    challenge = await apiRequestUtil.createChallenge(
+    const challenge = await apiRequestUtil.createChallenge(
       channelId,
       teamId,
       userId,
       submission.metric,
       submission.duration
     );
+
+    return chatUtil.postMessage({
+      channel: channelId,
+      text: `<!channel>: <@${
+        challenge.userId
+      }> has started a new challenge for \`${challenge.metric}\`!`
+    });
   } catch (error) {
     // TODO: Update error message
     // Message the error to the user
     return chatUtil.postEphemeral({
       channel: channelId,
       user: userId,
-      text: error.response.data
+      text: error
     });
   }
-
-  return chatUtil.postMessage({
-    channel: channelId,
-    text: `<!channel>: <@${userId}> has started a new challenge for \`${
-      submission.metric
-    }\`!`
-  });
 };

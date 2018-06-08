@@ -8,6 +8,12 @@ const app = express();
 app.use(bodyParser.json({ strict: false }));
 
 // Create challenge
-app.post("/api/challenge", ChallengeView.create);
+app.post("/api/challenges", ChallengeView.create);
+
+// Get challenge
+app.get("/api/challenges/:id", ChallengeView.get);
+
+// Get challenges
+app.get("/api/challenges", ChallengeView.query);
 
 export const handler = serverless(app);

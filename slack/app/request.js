@@ -1,44 +1,49 @@
 import axios from "axios";
 
 export class Request {
-  constructor(request) {
-    this.request = request;
+  constructor(client) {
+    this.client = client;
   }
 
-  get(url, params = {}) {
-    return this.request({
-      method: "get",
-      url: url,
-      params: params
+  request(method, url, params = {}, data = {}) {
+    return new Promise(async (resolve, reject) => {
+      const req = { method, url, params };
+
+      if (data) {
+        req["data"] = data;
+      }
+
+      try {
+        const response = await this.client(req);
+        resolve(response.data);
+      } catch (error) {
+        reject(error.response.data);
+      }
     });
   }
 
-  post(url, data = {}, params = {}) {
-    return this.request({
-      method: "post",
-      url: url,
-      params: params,
-      data: data
-    });
+  get(url, params) {
+    return this.request("get", url, params);
+  }
+
+  post(url, data, params = {}) {
+    return this.request("post", url, params, data);
   }
 }
 
 export class APIRequest extends Request {
-  constructor(request, baseURL) {
-    super(request);
+  constructor(client, baseURL) {
+    super(client);
     this.baseURL = baseURL;
   }
 
-  get(url, params = {}) {
-    return super.get(`${this.baseURL}${url}`, params);
-  }
-
-  post(url, data = {}, params = {}) {
-    return super.post(`${this.baseURL}${url}`, data, params);
+  request(method, url, params = {}, data = {}) {
+    // Append api base url to requests
+    return super.request(method, `${this.baseURL}${url}`, params, data);
   }
 
   createChallenge(channelId, teamId, userId, metric, duration) {
-    return this.post("challenge", {
+    return this.post("challenges", {
       channelId,
       teamId,
       userId,

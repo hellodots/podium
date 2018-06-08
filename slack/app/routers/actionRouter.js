@@ -32,18 +32,16 @@ slackInteractions.action("start_submission", async (payload, respond) => {
     TopicArn: `${AWS_SNS_ARN}:${ACTION_CONTROLLER_TOPIC}`
   };
 
-  let message;
   try {
-    message = await sns.publish(params).promise();
+    await sns.publish(params).promise();
+    await respond({
+      text: `Great! I will announce the \`${
+        submission.metric
+      }\` challenge in <#${channelId}> now.`
+    });
   } catch (error) {
     res.status(400).end(error);
   }
-
-  const response = await respond({
-    text: `Great! I will announce the \`${
-      submission.metric
-    }\` challenge in <#${channelId}> now.`
-  });
 });
 
 export const handler = serverless(app);

@@ -20,12 +20,10 @@ export const handler = async (event, context, callback) => {
   }
 
   // Send message to Slack
-  let res;
   try {
-    res = await req;
+    await req;
   } catch (error) {
-    callback(error);
-    return;
+    return callback(error);
   }
   return callback(null, "Success");
 };

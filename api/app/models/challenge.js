@@ -15,6 +15,13 @@ export class Challenge extends Model {
     this.metric = metric;
     this.active = active;
   }
+
+  // HACK: temp solution for querying on the model
+  static query(teamChannelId) {
+    const expression = "teamChannelId = :tc";
+    const values = { ":tc": teamChannelId };
+    return super.query(CHALLENGE_TABLE, expression, values);
+  }
 }
 
 Object.defineProperties(Challenge.prototype, {
