@@ -21,7 +21,7 @@ export const startSubmission = async (
 
     return chatUtil.postMessage({
       channel: channelId,
-      text: `<!channel>: <@${
+      text: `<!here>: <@${
         challenge.userId
       }> has started a new challenge for \`${challenge.metric}\`!`
     });
