@@ -32,8 +32,9 @@ slackInteractions.action("start_submission", async (payload, respond) => {
     TopicArn: `${AWS_SNS_ARN}:${ACTION_CONTROLLER_TOPIC}`
   };
 
+  let message;
   try {
-    const message = await sns.publish(params).promise();
+    message = await sns.publish(params).promise();
   } catch (error) {
     res.status(400).end(error);
   }

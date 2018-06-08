@@ -30,8 +30,9 @@ app.post("/slack/commands", async (req, res) => {
     TopicArn: `${AWS_SNS_ARN}:${COMMAND_CONTROLLER_TOPIC}`
   };
 
+  let message;
   try {
-    const message = await sns.publish(params).promise();
+    message = await sns.publish(params).promise();
   } catch (error) {
     res.status(400).end(error);
   }

@@ -24,7 +24,6 @@ export const handler = async (event, context, callback) => {
   try {
     res = await req;
   } catch (error) {
-    console.log(error);
     callback(error);
     return;
   }
