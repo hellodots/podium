@@ -31,12 +31,11 @@ app.post("/slack/commands", async (req, res) => {
   };
 
   try {
-    const message = await sns.publish(params).promise();
+    await sns.publish(params).promise();
+    res.status(200).end();
   } catch (error) {
     res.status(400).end(error);
   }
-
-  res.status(200).end();
 });
 
 export const handler = serverless(app);
