@@ -22,6 +22,26 @@ export class ActivityView {
   }
 
   static async query(req, res) {
-    res.status(501).end();
+    const { challengeId, teamId, userId } = req.query;
+
+    // TODO: implement error if no challengeId query params
+    // Temp, return a blank list
+    if (!challengeId) {
+      res.json([]).end();
+    }
+
+    // Check is teamId and userId are pased in
+    let teamUserId = null;
+    if (teamId && userId) {
+      teamUserId = `${teamId}-${userId}`;
+    }
+
+    try {
+      const activities = await Activity.query(challengeId, teamUserId);
+      res.json(activities).end();
+    } catch (error) {
+      console.log(error);
+      res.status(400).end(error.message);
+    }
   }
 }

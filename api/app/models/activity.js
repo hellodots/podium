@@ -14,6 +14,20 @@ export class Activity extends Model {
     this.teamUserId = teamUserId;
     this.deal = deal;
   }
+
+  // HACK: temp solution for querying on the model
+  static query(challengeId, teamUserId = null) {
+    // Check if teamUserId value has been passed in
+    let values = { ":c": challengeId };
+    let filters = null;
+    if (teamUserId !== null) {
+      filters = "teamUserId = :tu";
+      values[":tu"] = teamUserId;
+    }
+
+    const expression = "challengeId = :c";
+    return super.query(ACTIVITY_TABLE, expression, filters, values);
+  }
 }
 
 Object.defineProperties(Activity.prototype, {

@@ -57,7 +57,7 @@ export class ChallengeView {
     }
 
     // Check if 'active' param is passed in
-    let isActive;
+    let isActive = null;
     if (active) {
       isActive = active === "1" ? true : false;
     }

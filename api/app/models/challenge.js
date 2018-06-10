@@ -17,11 +17,11 @@ export class Challenge extends Model {
   }
 
   // HACK: temp solution for querying on the model
-  static query(teamChannelId, active) {
+  static query(teamChannelId, active = null) {
     // Check that an 'active' value has been passed in
     let values = { ":tc": teamChannelId };
     let filters = null;
-    if (active !== undefined) {
+    if (active !== null) {
       filters = "active = :a";
       values[":a"] = active;
     }
