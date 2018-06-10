@@ -1,6 +1,13 @@
 import { apiRequestUtil, requestUtil } from "../request";
+import { chatUtil } from "../client/chat";
 
-export const score = async (channelId, teamId, responseUrl) => {
+export const score = async (
+  channelId,
+  teamId,
+  responseUrl,
+  userId,
+  deal = "Unnamed deal"
+) => {
   // Check for existing challenge
   let challenges;
   try {
@@ -18,36 +25,26 @@ export const score = async (channelId, teamId, responseUrl) => {
       text: `There's no active challenge in <#${channelId}>`
     });
   }
+  const challenge = challenges[0];
 
-  // Found the active challenge in channel, announce score entry
-  const interactiveButtons = {
-    text: "Nice! Which activity did you score with `Acme Corp`?",
-    attachments: [
-      {
-        text: "Select the activity",
-        callback_id: "score_submission",
-        actions: [
-          {
-            name: "deal_created",
-            text: "Deal created (1pt)",
-            value: "deal_created",
-            type: "button"
-          },
-          {
-            name: "deal_closed",
-            text: "Deal closed  (5pt)",
-            value: "deal_closed",
-            type: "button"
-          },
-          {
-            name: "deal_stolen",
-            text: "Deal stolen from Magento (15pt)",
-            value: "deal_stolen",
-            type: "button"
-          }
-        ]
-      }
-    ]
-  };
-  return requestUtil.post(responseUrl, interactiveButtons);
+  // Assume only one metric per challenge for now, record it immediately
+  try {
+    const createdActivity = await apiRequestUtil.createActivity(
+      challenge.challengeId,
+      teamId,
+      userId,
+      deal
+    );
+    console.log(userId);
+    console.log(createdActivity);
+    return chatUtil.postMessage({
+      channel: channelId,
+      text: `<@${userId}> just scored a \`${challenge.metric}\` with \`${
+        createdActivity.deal
+      }\`!`
+    });
+  } catch (error) {
+    console.log(error);
+    return requestUtil.post(responseUrl, { text: error });
+  }
 };

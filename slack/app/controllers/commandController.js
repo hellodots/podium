@@ -20,7 +20,7 @@ export const handler = async (event, context, callback) => {
 
   let req;
   if (command.includes("score")) {
-    req = score(channelId, teamId, responseUrl);
+    req = score(channelId, teamId, responseUrl, userId, text);
   } else if (command.includes("podium")) {
     switch (text) {
       case "start":
