@@ -1,12 +1,6 @@
 import { Challenge } from "../models/challenge";
 import { Activity } from "../models/activity";
 
-const fetchChallenge = (teamChannelId, challengeId) => {
-  const toFetchChallenge = new Challenge(teamChannelId);
-  toFetchChallenge.challengeId = challengeId;
-  return toFetchChallenge.get();
-};
-
 export class ChallengeView {
   static async create(req, res) {
     const { channelId, teamId, userId, metric } = req.body;
@@ -37,7 +31,7 @@ export class ChallengeView {
     }
 
     try {
-      const fetchedChallenge = await fetchChallenge(
+      const fetchedChallenge = await Challenge.getChallenge(
         `${teamId}-${channelId}`,
         challengeId
       );
@@ -89,7 +83,7 @@ export class ChallengeView {
     // Get existing challenge
     let fetchedChallenge;
     try {
-      fetchedChallenge = await fetchChallenge(
+      fetchedChallenge = await Challenge.getChallenge(
         `${teamId}-${channelId}`,
         challengeId
       );

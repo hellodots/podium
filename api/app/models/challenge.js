@@ -29,6 +29,12 @@ export class Challenge extends Model {
     const expression = "teamChannelId = :tc";
     return super.query(CHALLENGE_TABLE, expression, filters, values);
   }
+
+  static async getChallenge(teamChannelId, challengeId) {
+    const fetchChallenge = new Challenge(teamChannelId);
+    fetchChallenge.challengeId = challengeId;
+    return fetchChallenge.get();
+  }
 }
 
 Object.defineProperties(Challenge.prototype, {
