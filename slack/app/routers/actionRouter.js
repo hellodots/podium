@@ -35,9 +35,7 @@ slackInteractions.action("start_submission", async (payload, respond) => {
   try {
     await sns.publish(params).promise();
     await respond({
-      text: `Great! I will announce the \`${
-        submission.metric
-      }\` challenge in <#${channelId}> now.`
+      text: `Ok`
     });
   } catch (error) {
     res.status(400).end(error);

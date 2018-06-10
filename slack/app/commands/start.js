@@ -1,8 +1,27 @@
 import { dialogUtil } from "../client/dialog";
+import { chatUtil } from "../client/chat";
+import { apiRequestUtil, requestUtil } from "../request";
 
-export const start = (channelId, teamId, triggerId) => {
-  // TODO: check for active challenge
+export const start = async (channelId, teamId, responseUrl, triggerId) => {
+  // Check for existing challenge
+  let challenges;
+  try {
+    challenges = await apiRequestUtil.getChallenges(channelId, teamId, 1);
+  } catch (error) {
+    console.log(error);
+    // Message the error to the user
+    return requestUtil.post(responseUrl, {
+      text: error
+    });
+  }
+  if (challenges.length > 0) {
+    // Found an existing active challenge in channel
+    return requestUtil.post(responseUrl, {
+      text: `There's already an active challenge in <#${channelId}>`
+    });
+  }
 
+  // No active challenge was found, continue with dialog
   const message = {
     trigger_id: triggerId,
     dialog: {

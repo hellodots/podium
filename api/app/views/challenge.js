@@ -16,7 +16,7 @@ export class ChallengeView {
   }
 
   static async query(req, res) {
-    const { teamId, channelId } = req.query;
+    const { teamId, channelId, active } = req.query;
 
     // TODO: implement error if no query params
     // If no query params, return a blank list
@@ -24,8 +24,17 @@ export class ChallengeView {
       res.json([]).end();
     }
 
+    // Check if 'active' param is passed in
+    let isActive;
+    if (active) {
+      isActive = active === "1" ? true : false;
+    }
+
     try {
-      const challenges = await Challenge.query(`${teamId}-${channelId}`);
+      const challenges = await Challenge.query(
+        `${teamId}-${channelId}`,
+        isActive
+      );
       res.json(challenges).end();
     } catch (error) {
       console.log(error);

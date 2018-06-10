@@ -32,11 +32,12 @@ export class Model {
   }
 
   // HACK: temp solution for querying on the model
-  static query(table, expression, values) {
+  static query(table, expression, filters, values) {
     const params = {
       TableName: table,
       KeyConditionExpression: expression,
-      ExpressionAttributeValues: values
+      ExpressionAttributeValues: values,
+      FilterExpression: filters
     };
 
     return new Promise((resolve, reject) => {

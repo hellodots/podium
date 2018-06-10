@@ -20,7 +20,7 @@ export const handler = async (event, context, callback) => {
   let req;
   switch (text) {
     case "start":
-      req = start(channelId, teamId, triggerId);
+      req = start(channelId, teamId, responseUrl, triggerId);
       break;
     case "score":
       // TODO: start challenge function
@@ -40,6 +40,7 @@ export const handler = async (event, context, callback) => {
     const res = await req;
     return callback(null, res);
   } catch (error) {
+    console.log(error);
     return callback(error);
   }
 };

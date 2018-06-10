@@ -7,8 +7,6 @@ export const startSubmission = async (
   userId,
   submission
 ) => {
-  // TODO: Check for existing challenge
-
   // Post to create challenge
   try {
     const challenge = await apiRequestUtil.createChallenge(
