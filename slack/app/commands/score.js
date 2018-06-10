@@ -1,6 +1,5 @@
 import { apiRequestUtil, requestUtil } from "../request";
 import { chatUtil } from "../client/chat";
-import { getScoreBoard } from "../templates/getScores";
 
 export const score = async (channelId, teamId, responseUrl, userId, deal) => {
   // Check for existing challenge
@@ -25,7 +24,7 @@ export const score = async (channelId, teamId, responseUrl, userId, deal) => {
   // Check if a deal name was entered
   let dealName = "Unnamed deal";
   if (deal.length > 0) {
-    dealname = deal;
+    dealName = deal;
   }
 
   // Assume only one metric per challenge for now, record it immediately
@@ -43,8 +42,7 @@ export const score = async (channelId, teamId, responseUrl, userId, deal) => {
       channel: channelId,
       text: `<@${userId}> just scored a \`${challenge.metric}\` with \`${
         createdActivity.deal
-      }\`!`,
-      attachments: await getScoreBoard(challenge)
+      }\`!`
     };
 
     return chatUtil.postMessage(message);
