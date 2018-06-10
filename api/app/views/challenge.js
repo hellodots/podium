@@ -4,6 +4,11 @@ export class ChallengeView {
   static async create(req, res) {
     const { channelId, teamId, userId, metric } = req.body;
 
+    // Team id and channel id are required
+    if (!teamId || !channelId) {
+      res.status(400).end("Team ID and Channel ID are required");
+    }
+
     const teamChannelId = `${teamId}-${channelId}`;
     const newChallenge = new Challenge(teamChannelId, userId, metric, true);
 
@@ -43,7 +48,23 @@ export class ChallengeView {
   }
 
   static async get(req, res) {
-    // TODO: implement get using id in params
-    res.status(501).end();
+    const { id: challengeID } = req.params;
+    const { teamId, channelId } = req.query;
+
+    // Team id and channel id are required
+    if (!teamId || !channelId) {
+      res.status(400).end("Team ID and Channel ID are required");
+    }
+
+    const toFetchChallenge = new Challenge(`${teamId}-${channelId}`);
+    toFetchChallenge.challengeId = challengeID;
+
+    try {
+      const fetchedChallenge = await toFetchChallenge.get();
+      res.json(fetchedChallenge).end();
+    } catch (error) {
+      console.log(error);
+      res.status(400).end(error.message);
+    }
   }
 }

@@ -27,6 +27,10 @@ if (IS_OFFLINE === "true") {
 const mapper = new DataMapper({ client });
 
 export class Model {
+  get() {
+    return mapper.get({ item: this });
+  }
+
   put() {
     return mapper.put({ item: this });
   }
