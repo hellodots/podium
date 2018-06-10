@@ -1,26 +1,52 @@
-export const getScoreBoard = challengeId => {
-  // Todo: get scores from db
+import { apiRequestUtil } from "../request";
 
-  // Format score board message attachment
-  const scoreBoard = [
+export const getScoreBoard = async challenge => {
+  // Get all users and activities from database
+  let activities = [];
+  try {
+    activities = await apiRequestUtil.getActivities(challenge.challengeId);
+  } catch (error) {
+    console.log(error);
+  }
+
+  // Group activities by user
+  const scores = activities.reduce((acc, activity) => {
+    const { teamUserId, points } = activity;
+    // Split the userTeamId and get the userId
+    const userId = teamUserId.split("-")[1];
+    if (acc.has(userId)) {
+      acc.set(userId, acc.get(userId) + points);
+    } else {
+      acc.set(userId, points);
+    }
+    return acc;
+  }, new Map());
+
+  // Sort user scores
+  const rank = [...scores.entries()].sort((a, b) => b[1] - a[1]);
+
+  // Pretty print rank
+  const fields = rank.map(item => {
+    const [userId, points] = item;
+    return {
+      value: `<@${userId}> ..... ${points}`
+    };
+  });
+
+  // Format response
+  const attachments = [
     {
-      text: "Total team points: 5"
+      fallback: `Total \`${challenge.metric}\` ..... ${activities.length}`,
+      color: "#2eb886",
+      text: `Total \`${challenge.metric}\` ..... ${activities.length}`
     },
     {
-      title: "Score board",
-      fields: [
-        {
-          value: "Jordan Chan ..... 5"
-        },
-        {
-          value: "Martin Sitar .... 3"
-        },
-        {
-          value: "Ian Tao ......... 1"
-        }
-      ]
+      fallback: "Leaderboard",
+      title: "Leaderboard",
+      color: "#2eb886",
+      fields: fields
     }
   ];
 
-  return scoreBoard;
+  return attachments;
 };
