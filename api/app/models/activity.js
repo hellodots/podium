@@ -1,4 +1,5 @@
 import { DynamoDbSchema, DynamoDbTable } from "@aws/dynamodb-data-mapper";
+import uuidv4 from "uuid/v4";
 
 import { Model } from "./model";
 
@@ -8,13 +9,14 @@ export class Activity extends Model {
   constructor(challengeId, teamUserId, deal) {
     super();
     this.challengeId = challengeId;
+    this.activityId = uuidv4();
     this.createdAt = Date.now();
     this.teamUserId = teamUserId;
     this.deal = deal;
   }
 }
 
-Object.defineProperties(Challenge.prototype, {
+Object.defineProperties(Activity.prototype, {
   [DynamoDbTable]: {
     value: ACTIVITY_TABLE
   },
@@ -24,10 +26,12 @@ Object.defineProperties(Challenge.prototype, {
         type: "String",
         keyType: "HASH"
       },
-      createdAt: {
+      activityId: {
         type: "String",
-        keyType: "RANGE"
+        keyType: "RANGE",
+        defaultProvider: uuidv4
       },
+      createdAt: { type: "String" },
       teamUserId: { type: "String" },
       deal: { type: "String" }
     }
