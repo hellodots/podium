@@ -1,5 +1,5 @@
 import { Challenge } from "../models/challenge";
-import { fetchActivities } from "../views/activity";
+import { Activity } from "../models/activity";
 
 const fetchChallenge = (teamChannelId, challengeId) => {
   const toFetchChallenge = new Challenge(teamChannelId);
@@ -121,7 +121,7 @@ export class ChallengeView {
 
     let activities;
     try {
-      activities = await fetchActivities(challengeId);
+      activities = await Activity.getActivities(challengeId);
     } catch (error) {
       res.status(400).end(error.message);
     }
