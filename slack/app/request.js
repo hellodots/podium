@@ -23,7 +23,7 @@ export class Request {
   }
 
   get(url, params) {
-    return this.request("get", url, params);
+    return this.request("get", url, params, null);
   }
 
   post(url, data, params = {}) {
@@ -49,6 +49,14 @@ export class APIRequest extends Request {
       userId,
       metric,
       duration
+    });
+  }
+
+  getChallenges(channelId, teamId, active) {
+    return this.get("challenges", {
+      channelId,
+      teamId,
+      active
     });
   }
 }
