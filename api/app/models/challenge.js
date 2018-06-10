@@ -9,19 +9,19 @@ export class Challenge extends Model {
   constructor(teamChannelId, userId, metric, active = true) {
     super();
     this.teamChannelId = teamChannelId;
-    this.createdAt = Date.now();
     this.challengeId = uuidv4();
+    this.createdAt = Date.now();
     this.userId = userId;
     this.metric = metric;
     this.active = active;
   }
 
   // HACK: temp solution for querying on the model
-  static query(teamChannelId, active) {
+  static query(teamChannelId, active = null) {
     // Check that an 'active' value has been passed in
     let values = { ":tc": teamChannelId };
     let filters = null;
-    if (active !== undefined) {
+    if (active !== null) {
       filters = "active = :a";
       values[":a"] = active;
     }
@@ -41,14 +41,12 @@ Object.defineProperties(Challenge.prototype, {
         type: "String",
         keyType: "HASH"
       },
-      createdAt: {
-        type: "String",
-        keyType: "RANGE"
-      },
       challengeId: {
         type: "String",
+        keyType: "RANGE",
         defaultProvider: uuidv4
       },
+      createdAt: { type: "String" },
       userId: { type: "String" },
       metric: { type: "String" },
       active: {
