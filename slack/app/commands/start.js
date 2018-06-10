@@ -2,13 +2,7 @@ import { dialogUtil } from "../client/dialog";
 import { chatUtil } from "../client/chat";
 import { apiRequestUtil, requestUtil } from "../request";
 
-export const start = async (
-  channelId,
-  teamId,
-  responseUrl,
-  triggerId,
-  userId
-) => {
+export const start = async (channelId, teamId, responseUrl, triggerId) => {
   // Check for existing challenge
   let challenges;
   try {
