@@ -1,5 +1,6 @@
 import { help } from "../commands/help";
 import { start } from "../commands/start";
+import { score } from "../commands/score";
 
 // Commands handler
 export const handler = async (event, context, callback) => {
@@ -18,21 +19,24 @@ export const handler = async (event, context, callback) => {
   } = message;
 
   let req;
-  switch (text) {
-    case "start":
-      req = start(channelId, teamId, responseUrl, triggerId);
-      break;
-    case "score":
-      // TODO: start challenge function
-      break;
-    case "check":
-      // TODO: start challenge function
-      break;
-    case "end":
-      // TODO: start challenge function
-      break;
-    default:
-      req = help(responseUrl);
+  if (command.includes("score")) {
+    req = score(channelId, teamId, responseUrl);
+  } else if (command.includes("podium")) {
+    switch (text) {
+      case "start":
+        req = start(channelId, teamId, responseUrl, triggerId);
+        break;
+      case "check":
+        // TODO: start challenge function
+        break;
+      case "end":
+        // TODO: start challenge function
+        break;
+      default:
+        req = help(responseUrl);
+    }
+  } else {
+    req = help(responseUrl);
   }
 
   // Send message to Slack
