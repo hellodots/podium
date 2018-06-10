@@ -16,4 +16,6 @@ app.get("/api/challenges/:id", ChallengeView.get);
 // Get challenges
 app.get("/api/challenges", ChallengeView.query);
 
+app.put("/api/challenges/:id", ChallengeView.update);
+
 export const handler = serverless(app);
