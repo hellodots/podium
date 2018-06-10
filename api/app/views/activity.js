@@ -1,5 +1,20 @@
 import { Activity } from "../models/activity";
 
+export const fetchActivities = (challengeId, teamId, userId) => {
+  // TODO: implement error if no challengeId query params
+  // Temp, return a blank list
+  if (!challengeId) {
+    return [];
+  }
+
+  // Check is teamId and userId are pased in
+  let teamUserId = null;
+  if (teamId && userId) {
+    teamUserId = `${teamId}-${userId}`;
+  }
+
+  return Activity.query(challengeId, teamUserId);
+};
 export class ActivityView {
   static async create(req, res) {
     const { challengeId } = req.query;
@@ -24,23 +39,10 @@ export class ActivityView {
   static async query(req, res) {
     const { challengeId, teamId, userId } = req.query;
 
-    // TODO: implement error if no challengeId query params
-    // Temp, return a blank list
-    if (!challengeId) {
-      res.json([]).end();
-    }
-
-    // Check is teamId and userId are pased in
-    let teamUserId = null;
-    if (teamId && userId) {
-      teamUserId = `${teamId}-${userId}`;
-    }
-
     try {
-      const activities = await Activity.query(challengeId, teamUserId);
+      const activities = await fetchActivities(challengeId, teamId, userId);
       res.json(activities).end();
     } catch (error) {
-      console.log(error);
       res.status(400).end(error.message);
     }
   }
