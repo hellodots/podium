@@ -1,9 +1,4 @@
 import { apiRequestUtil, requestUtil } from "../request";
-import { chatUtil } from "../client/chat";
-<<<<<<< HEAD
-import { request } from "https";
-=======
->>>>>>> f337f720b5b84c1223b45eb754cfb30ec5a9d3f4
 
 export const score = async (channelId, teamId, responseUrl, userId, deal) => {
   // Check for existing challenge
@@ -47,6 +42,7 @@ export const score = async (channelId, teamId, responseUrl, userId, deal) => {
     );
 
     // Format Slack message
+    message["response_type"] = "in_channel";
     message["text"] = `<@${userId}> just scored a \`${
       challenge.metric
     }\` with \`${createdActivity.deal}\`!`;
