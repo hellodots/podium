@@ -1,5 +1,6 @@
 import { apiRequestUtil, requestUtil } from "../request";
 import { chatUtil } from "../client/chat";
+import { request } from "https";
 
 export const score = async (channelId, teamId, responseUrl, userId, deal) => {
   // Check for existing challenge
@@ -13,21 +14,27 @@ export const score = async (channelId, teamId, responseUrl, userId, deal) => {
       text: error
     });
   }
-  if (challenges.length != 1) {
+  if (challenges.length === 0) {
     // Did not find an existing active challenge in channel
     return requestUtil.post(responseUrl, {
       text: `There's no active challenge in <#${channelId}>`
+    });
+  } else if (challenges.length > 1) {
+    // Found multiple active challenges in channel
+    return requestUtil.post(responseUrl, {
+      text: `There are multiple active challenges in <#${channelId}>`
     });
   }
   const challenge = challenges[0];
 
   // Check if a deal name was entered
   let dealName = "Unnamed deal";
-  if (deal.length > 0) {
+  if (deal && deal.length > 0) {
     dealName = deal;
   }
 
   // Assume only one metric per challenge for now, record it immediately
+  let message = { channel: channelId };
   try {
     const createdActivity = await apiRequestUtil.createActivity(
       challenge.challengeId,
@@ -37,17 +44,12 @@ export const score = async (channelId, teamId, responseUrl, userId, deal) => {
     );
 
     // Format Slack message
-    console.log(channelId);
-    const message = {
-      channel: channelId,
-      text: `<@${userId}> just scored a \`${challenge.metric}\` with \`${
-        createdActivity.deal
-      }\`!`
-    };
-
-    return chatUtil.postMessage(message);
+    message["text"] = `<@${userId}> just scored a \`${
+      challenge.metric
+    }\` with \`${createdActivity.deal}\`!`;
   } catch (error) {
     console.log(error);
-    return requestUtil.post(responseUrl, { text: error });
+    message["text"] = error;
   }
+  return requestUtil.post(responseUrl, message);
 };
