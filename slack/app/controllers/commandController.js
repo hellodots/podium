@@ -1,5 +1,6 @@
 import { help } from "../commands/help";
 import { start } from "../commands/start";
+import { end } from "../commands/end";
 import { score } from "../commands/score";
 
 // Commands handler
@@ -30,7 +31,7 @@ export const handler = async (event, context, callback) => {
         // TODO: start challenge function
         break;
       case "end":
-        // TODO: start challenge function
+        req = end(channelId, teamId, responseUrl, userId);
         break;
       default:
         req = help(responseUrl);

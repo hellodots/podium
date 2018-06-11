@@ -71,9 +71,7 @@ export class ChallengeView {
 
   static async update(req, res) {
     const { id: challengeId } = req.params;
-    const { teamId, channelId } = req.query;
-
-    const { active, metric } = req.body;
+    const { teamId, channelId, active, metric } = req.body;
 
     // Team id and channel id are required
     if (!teamId || !channelId) {
