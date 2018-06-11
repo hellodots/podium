@@ -28,6 +28,16 @@ export class Activity extends Model {
     const expression = "challengeId = :c";
     return super.query(ACTIVITY_TABLE, expression, filters, values);
   }
+
+  static async getActivities(challengeId, teamId, userId) {
+    // Check is teamId and userId are pased in
+    let teamUserId = null;
+    if (teamId && userId) {
+      teamUserId = `${teamId}-${userId}`;
+    }
+
+    return Activity.query(challengeId, teamUserId);
+  }
 }
 
 Object.defineProperties(Activity.prototype, {

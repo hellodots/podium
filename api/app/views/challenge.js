@@ -1,10 +1,5 @@
 import { Challenge } from "../models/challenge";
-
-const fetchChallenge = (teamChannelId, challengeId) => {
-  const toFetchChallenge = new Challenge(teamChannelId);
-  toFetchChallenge.challengeId = challengeId;
-  return toFetchChallenge.get();
-};
+import { Activity } from "../models/activity";
 
 export class ChallengeView {
   static async create(req, res) {
@@ -36,7 +31,7 @@ export class ChallengeView {
     }
 
     try {
-      const fetchedChallenge = await fetchChallenge(
+      const fetchedChallenge = await Challenge.getChallenge(
         `${teamId}-${channelId}`,
         challengeId
       );
@@ -88,7 +83,7 @@ export class ChallengeView {
     // Get existing challenge
     let fetchedChallenge;
     try {
-      fetchedChallenge = await fetchChallenge(
+      fetchedChallenge = await Challenge.getChallenge(
         `${teamId}-${channelId}`,
         challengeId
       );
@@ -113,5 +108,36 @@ export class ChallengeView {
     } catch (error) {
       res.status(400).end(error.message);
     }
+  }
+
+  static async getLeaderboard(req, res) {
+    const { id: challengeId } = req.params;
+
+    let activities;
+    try {
+      activities = await Activity.getActivities(challengeId);
+    } catch (error) {
+      res.status(400).end(error.message);
+    }
+
+    // Group activities by user
+    const scores = activities.reduce((acc, activity) => {
+      const { teamUserId } = activity;
+      // Split the userTeamId and get the userId
+      const userId = teamUserId.split("-")[1];
+
+      // TEMP: Increment the number of points by 1 for each activity
+      if (acc.has(userId)) {
+        acc.set(userId, acc.get(userId) + 1);
+      } else {
+        acc.set(userId, 1);
+      }
+      return acc;
+    }, new Map());
+
+    // Sort user scores
+    const leaderboard = [...scores.entries()].sort((a, b) => b[1] - a[1]);
+
+    return res.json(leaderboard).end();
   }
 }
