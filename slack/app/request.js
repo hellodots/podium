@@ -68,6 +68,10 @@ export class APIRequest extends Request {
     return this.put("challenges/" + challengeId, { channelId, teamId, active });
   }
 
+  getLeaderboard(challengeId) {
+    return this.get("challenges/" + challengeId + "/leaderboard");
+  }
+
   createActivity(challengeId, channelId, teamId, userId, deal) {
     return this.post("activities", {
       challengeId,

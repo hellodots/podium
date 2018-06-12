@@ -1,7 +1,7 @@
 import { apiRequestUtil, requestUtil } from "../request";
 import { formatLeaderboard } from "../templates/leaderboard";
 
-export const end = async (channelId, teamId, responseUrl, userId) => {
+export const rank = async (channelId, teamId, responseUrl, triggerId) => {
   // Check for existing challenge
   let challenges;
   try {
@@ -26,28 +26,7 @@ export const end = async (channelId, teamId, responseUrl, userId) => {
   }
   const challenge = challenges[0];
 
-  // Update challenge to be inactive
   let message = { channel: channelId };
-  try {
-    const updatedChallenge = await apiRequestUtil.updateChallenge(
-      challenge.challengeId,
-      channelId,
-      teamId,
-      0
-    );
-
-    message["response_type"] = "in_channel";
-    message[
-      "text"
-    ] = `That's a wrap! :tada: <@${userId}> has ended the challenge for \`${
-      updatedChallenge.metric
-    }\`!`;
-  } catch (error) {
-    console.log(error);
-    message["text"] = error;
-  }
-
-  // Get challenge leaderboard
   try {
     const rawLeaderboard = await apiRequestUtil.getLeaderboard(
       challenge.challengeId,
@@ -58,6 +37,7 @@ export const end = async (channelId, teamId, responseUrl, userId) => {
     message["attachments"] = formatLeaderboard(challenge, rawLeaderboard);
   } catch (error) {
     console.log(error);
+    message["text"] = error;
   }
 
   return requestUtil.post(responseUrl, message);
