@@ -2,6 +2,7 @@ import { help } from "../commands/help";
 import { start } from "../commands/start";
 import { end } from "../commands/end";
 import { score } from "../commands/score";
+import { rank } from "../commands/rank";
 
 // Commands handler
 export const handler = async (event, context, callback) => {
@@ -27,8 +28,8 @@ export const handler = async (event, context, callback) => {
       case "start":
         req = start(channelId, teamId, responseUrl, triggerId);
         break;
-      case "check":
-        // TODO: start challenge function
+      case "rank":
+        req = rank(channelId, teamId, responseUrl);
         break;
       case "end":
         req = end(channelId, teamId, responseUrl, userId);
