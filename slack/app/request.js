@@ -69,7 +69,7 @@ export class APIRequest extends Request {
   }
 
   getLeaderboard(challengeId) {
-    return this.get("challenges/" + challengeId + "/leaderboard");
+    return this.get(`challenges/${challengeId}` + "/leaderboard");
   }
 
   createActivity(challengeId, channelId, teamId, userId, deal) {

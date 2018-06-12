@@ -10,11 +10,6 @@ export const formatLeaderboard = (challenge, leaderboard) => {
   });
 
   const attachments = [
-    // {
-    //   fallback: `Total \`${metric}\` ..... ${activities.length}`,
-    //   color: "#2eb886",
-    //   text: `Total \`${metric}\` ..... ${activities.length}`
-    // },
     {
       fallback: `${challenge.metric} leaderboard`,
       title: `${challenge.metric} leaderboard`,
