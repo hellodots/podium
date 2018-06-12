@@ -26,6 +26,10 @@ export class Request {
     return this.request("get", url, params, null);
   }
 
+  put(url, data, params = {}) {
+    return this.request("put", url, params, data);
+  }
+
   post(url, data, params = {}) {
     return this.request("post", url, params, data);
   }
@@ -57,6 +61,32 @@ export class APIRequest extends Request {
       channelId,
       teamId,
       active
+    });
+  }
+
+  updateChallenge(challengeId, channelId, teamId, active) {
+    return this.put(`challenges/${challengeId}`, { channelId, teamId, active });
+  }
+
+  getLeaderboard(challengeId) {
+    return this.get(`challenges/${challengeId}` + "/leaderboard");
+  }
+
+  createActivity(challengeId, channelId, teamId, userId, deal) {
+    return this.post("activities", {
+      challengeId,
+      channelId,
+      teamId,
+      userId,
+      deal
+    });
+  }
+
+  getActivities(challengeId, teamId, userId) {
+    return this.get("activities", {
+      challengeId,
+      teamId,
+      userId
     });
   }
 }
