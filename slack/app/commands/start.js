@@ -1,5 +1,4 @@
 import { dialogUtil } from "../client/dialog";
-import { chatUtil } from "../client/chat";
 import { apiRequestUtil, requestUtil } from "../request";
 
 export const start = async (channelId, teamId, responseUrl, triggerId) => {

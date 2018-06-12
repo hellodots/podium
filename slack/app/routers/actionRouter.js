@@ -42,4 +42,27 @@ slackInteractions.action("start_submission", async (payload, respond) => {
   }
 });
 
+slackInteractions.action("score_submission", async (payload, respond) => {
+  // Parse payload
+  const { actions, callback_id: callbackId, submission } = payload;
+  const channelId = payload.channel.id;
+  const teamId = payload.team.id;
+  const userId = payload.user.id;
+
+  // Trigger action controller
+  const params = {
+    Message: JSON.stringify(payload),
+    TopicArn: `${AWS_SNS_ARN}:${ACTION_CONTROLLER_TOPIC}`
+  };
+
+  try {
+    await sns.publish(params).promise();
+    await respond({
+      delete_original: true
+    });
+  } catch (error) {
+    res.status(400).end(error);
+  }
+});
+
 export const handler = serverless(app);
