@@ -39,7 +39,7 @@ export const end = async (channelId, teamId, responseUrl, userId) => {
     message["response_type"] = "in_channel";
     message[
       "text"
-    ] = `That's a wrap! :tada: <@${userId}> has ended the challenge for \`${
+    ] = `<!here> That's a wrap! :tada: :sports_medal: <@${userId}> has ended the challenge for \`${
       updatedChallenge.metric
     }\`!`;
   } catch (error) {
