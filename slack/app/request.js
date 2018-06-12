@@ -68,7 +68,7 @@ export class APIRequest extends Request {
     return this.put("challenges/" + challengeId, { channelId, teamId, active });
   }
 
-  createActivity(challengeId, teamId, userId, deal) {
+  createActivity(challengeId, channelId, teamId, userId, deal) {
     return this.post("activities", {
       challengeId,
       channelId,

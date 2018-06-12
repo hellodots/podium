@@ -36,6 +36,7 @@ export const score = async (channelId, teamId, responseUrl, userId, deal) => {
   try {
     const createdActivity = await apiRequestUtil.createActivity(
       challenge.challengeId,
+      channelId,
       teamId,
       userId,
       dealName
