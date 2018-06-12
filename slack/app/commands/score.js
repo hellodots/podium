@@ -25,12 +25,6 @@ export const score = async (channelId, teamId, responseUrl, userId, deal) => {
   }
   const challenge = challenges[0];
 
-  // Check if a deal name was entered
-  let dealName = "Unnamed deal";
-  if (deal && deal.length > 0) {
-    dealName = deal;
-  }
-
   // Assume only one metric per challenge for now, record it immediately
   let message = { channel: channelId };
   try {
@@ -39,14 +33,19 @@ export const score = async (channelId, teamId, responseUrl, userId, deal) => {
       channelId,
       teamId,
       userId,
-      dealName
+      deal
     );
 
     // Format Slack message
     message["response_type"] = "in_channel";
-    message["text"] = `<@${userId}> just scored a \`${
-      challenge.metric
-    }\` with \`${createdActivity.deal}\`!`;
+    // Check if a deal name was entered
+    if (deal && deal.length > 0) {
+      message["text"] = `<@${userId}> just scored \`${
+        challenge.metric
+      }\` with \`${createdActivity.deal}\`!`;
+    } else {
+      message["text"] = `<@${userId}> just scored \`${challenge.metric}\``;
+    }
   } catch (error) {
     console.log(error);
     message["text"] = error;
