@@ -1,16 +1,4 @@
 import { apiRequestUtil, requestUtil } from "../request";
-<<<<<<< HEAD
-import { chatUtil } from "../client/chat";
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { request } from "https";
-=======
-import { getScoreBoard } from "../templates/getScores";
->>>>>>> 7bc32b7... WIP get score board with every score entry
-=======
->>>>>>> f337f72... remove request logic from template file
-=======
->>>>>>> eb5a3a2... respond to /score publicly
 
 export const score = async (channelId, teamId, responseUrl, userId, deal) => {
   // Check for existing challenge
