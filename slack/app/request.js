@@ -59,6 +59,18 @@ export class APIRequest extends Request {
       active
     });
   }
+
+  createActivity(challengeId, teamId, userId, deal) {
+    return this.post("activities", { challengeId, teamId, userId, deal });
+  }
+
+  getActivities(challengeId, teamId, userId) {
+    return this.get("activities", {
+      challengeId,
+      teamId,
+      userId
+    });
+  }
 }
 
 export const apiRequestUtil = new APIRequest(axios, process.env.API_BASE);
