@@ -20,12 +20,6 @@ const slackInteractions = createMessageAdapter(SLACK_VERIFICATION_TOKEN);
 app.use("/slack/actions", slackInteractions.expressMiddleware());
 
 slackInteractions.action("start_submission", async (payload, respond) => {
-  // Parse payload
-  const { actions, callback_id: callbackId, submission } = payload;
-  const channelId = payload.channel.id;
-  const teamId = payload.team.id;
-  const userId = payload.user.id;
-
   // Trigger action controller
   const params = {
     Message: JSON.stringify(payload),
@@ -38,30 +32,9 @@ slackInteractions.action("start_submission", async (payload, respond) => {
       text: `Ok`
     });
   } catch (error) {
-    res.status(400).end(error);
-  }
-});
-
-slackInteractions.action("score_submission", async (payload, respond) => {
-  // Parse payload
-  const { actions, callback_id: callbackId, submission } = payload;
-  const channelId = payload.channel.id;
-  const teamId = payload.team.id;
-  const userId = payload.user.id;
-
-  // Trigger action controller
-  const params = {
-    Message: JSON.stringify(payload),
-    TopicArn: `${AWS_SNS_ARN}:${ACTION_CONTROLLER_TOPIC}`
-  };
-
-  try {
-    await sns.publish(params).promise();
     await respond({
-      delete_original: true
+      text: "Failed to send publish to SNS"
     });
-  } catch (error) {
-    res.status(400).end(error);
   }
 });
 
