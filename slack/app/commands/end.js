@@ -45,6 +45,7 @@ export const end = async (channelId, teamId, responseUrl, userId) => {
   } catch (error) {
     console.log(error);
     message["text"] = error;
+    return requestUtil.post(responseUrl, message);
   }
 
   // Get challenge leaderboard
