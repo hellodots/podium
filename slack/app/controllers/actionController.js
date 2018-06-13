@@ -8,11 +8,12 @@ export const handler = async (event, context, callback) => {
   const channelId = message.channel.id;
   const teamId = message.team.id;
   const userId = message.user.id;
+  const responseUrl = message.response_url;
 
   let req;
   switch (callbackId) {
     case "start_submission":
-      req = startSubmission(channelId, teamId, userId, submission);
+      req = startSubmission(channelId, teamId, userId, submission, responseUrl);
       break;
     default:
       console.log("Invalid event callback id");
