@@ -51,8 +51,7 @@ export class APIRequest extends Request {
       channelId,
       teamId,
       userId,
-      metric,
-      duration
+      metric
     });
   }
 
