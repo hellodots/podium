@@ -16,15 +16,26 @@ provider:
       Action:
         - "sns:Publish"
       Resource: "*"
-  
+
 functions:
+  authorization:
+    handler: app/routers/authorizationRouter.handler
+    name: ${self:service}-authorization-${self:provider.stage}
+    description: Slack authorization
+    events:
+      - http:
+          path: slack/authorization
+          method: GET
+    environment:
+      SLACK_CLIENT_ID: ${self:custom.slackClientId}
+      SLACK_CLIENT_SECRET: ${self:custom.slackClientSecret}
   command-controller:
     handler: app/controllers/commandController.handler
     name: ${self:service}-command-controller-${self:provider.stage}
     description: Slack command controller
     events:
       - sns: ${self:custom.commandControllerTopic}
-    environment: 
+    environment:
       API_BASE: ${self:custom.apiBase}
       SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
   command-router:
@@ -35,7 +46,7 @@ functions:
       - http:
           path: slack/commands
           method: POST
-    environment: 
+    environment:
       AWS_SNS_ARN: ${self:custom.snsTopicArn}
       COMMAND_CONTROLLER_TOPIC: ${self:custom.commandControllerTopic}
       SLACK_VERIFICATION_TOKEN: ${self:custom.slackVerificationToken}
@@ -45,7 +56,7 @@ functions:
     description: Slack action controller
     events:
       - sns: ${self:custom.actionControllerTopic}
-    environment: 
+    environment:
       API_BASE: ${self:custom.apiBase}
       SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
   action-router:
@@ -56,7 +67,7 @@ functions:
       - http:
           path: slack/actions
           method: POST
-    environment: 
+    environment:
       AWS_SNS_ARN: ${self:custom.snsTopicArn}
       ACTION_CONTROLLER_TOPIC: ${self:custom.actionControllerTopic}
       SLACK_VERIFICATION_TOKEN: ${self:custom.slackVerificationToken}
@@ -64,7 +75,7 @@ functions:
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: 
+    includeModules:
       forceExclude:
         - aws-sdk
     packager: 'npm'
@@ -85,7 +96,10 @@ custom:
   # Topics
   actionControllerTopic: actionController
   commandControllerTopic: commandController
-  
+
   # Slack
+  # TODO: delete bot token
   slackBotToken: ${file(env/${self:provider.stage}.yml):SLACK_BOT_TOKEN}
+  slackClientId: ${file(env/${self:provider.stage}.yml):SLACK_CLIENT_ID}
+  slackClientSecret: ${file(env/${self:provider.stage}.yml):SLACK_CLIENT_SECRET}
   slackVerificationToken: ${file(env/${self:provider.stage}.yml):SLACK_VERIFICATION_TOKEN}
