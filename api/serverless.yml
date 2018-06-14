@@ -22,6 +22,7 @@ provider:
         - dynamodb:DeleteItem
       Resource: "*"
   environment:
+    TEAM_TABLE: ${self:service}-team-table-${self:provider.stage}
     ACTIVITY_TABLE: ${self:service}-activity-table-${self:provider.stage}
     CHALLENGE_TABLE: ${self:service}-challenge-table-${self:provider.stage}
 
@@ -37,6 +38,22 @@ functions:
 
 resources:
   Resources:
+    TeamTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: teamId
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: teamId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.TEAM_TABLE}
     ActivityTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -85,7 +102,7 @@ resources:
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: 
+    includeModules:
       forceExclude:
         - aws-sdk
     packager: 'npm'

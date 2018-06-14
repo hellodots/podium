@@ -1,7 +1,7 @@
 import serverless from "serverless-http";
 import express from "express";
 
-import { requestUtil } from "../request";
+import { apiRequestUtil, requestUtil } from "../request";
 
 // Environment variables
 const { SLACK_CLIENT_ID, SLACK_CLIENT_SECRET } = process.env;
@@ -9,6 +9,7 @@ const { SLACK_CLIENT_ID, SLACK_CLIENT_SECRET } = process.env;
 const app = express();
 
 app.get("/slack/authorization", async (req, res) => {
+  // Get Slack team oauth access code
   const code = req.query.code;
   let response;
   try {
@@ -19,9 +20,27 @@ app.get("/slack/authorization", async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    response = error;
+    res.status(400).end(error);
   }
-  res.json(response).end();
+
+  // Create team in database
+  const {
+    team_id: teamId,
+    access_token: token,
+    team_name: teamName
+  } = response;
+
+  try {
+    const createdTeam = await apiRequestUtil.createTeam(
+      teamId,
+      token,
+      teamName
+    );
+    res.status(200).end();
+  } catch (error) {
+    console.log(error);
+    res.status(400).end(error);
+  }
 });
 
 export const handler = serverless(app);

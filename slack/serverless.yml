@@ -16,6 +16,8 @@ provider:
       Action:
         - "sns:Publish"
       Resource: "*"
+  environment:
+    API_BASE: ${self:custom.apiBase}
 
 functions:
   authorization:
@@ -36,7 +38,6 @@ functions:
     events:
       - sns: ${self:custom.commandControllerTopic}
     environment:
-      API_BASE: ${self:custom.apiBase}
       SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
   command-router:
     handler: app/routers/commandRouter.handler
@@ -57,7 +58,6 @@ functions:
     events:
       - sns: ${self:custom.actionControllerTopic}
     environment:
-      API_BASE: ${self:custom.apiBase}
       SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
   action-router:
     handler: app/routers/actionRouter.handler
