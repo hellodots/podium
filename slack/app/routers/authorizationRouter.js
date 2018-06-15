@@ -11,6 +11,12 @@ const app = express();
 app.get("/slack/authorization", async (req, res) => {
   // Get Slack team oauth access code
   const code = req.query.code;
+
+  // Check if auth access was denied
+  if (req.query.error) {
+    res.status(400).end("Error... :(");
+  }
+
   let response;
   try {
     response = await requestUtil.get("https://slack.com/api/oauth.access", {
@@ -36,7 +42,7 @@ app.get("/slack/authorization", async (req, res) => {
       token,
       teamName
     );
-    res.status(200).end();
+    res.status(200).end("Success! :)");
   } catch (error) {
     console.log(error);
     res.status(400).end(error);
