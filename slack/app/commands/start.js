@@ -1,6 +1,6 @@
 import { Dialog } from "../client/dialog";
 import { apiRequestUtil, requestUtil } from "../request";
-import { startMessage } from "../templates/startMessage";
+import { formatStartMessage } from "../templates/startMessage";
 
 export const start = async (channelId, teamId, responseUrl, triggerId) => {
   // Check for existing challenge
@@ -22,7 +22,7 @@ export const start = async (channelId, teamId, responseUrl, triggerId) => {
   }
 
   // No active challenge was found, continue with dialog
-  const message = startMessage(triggerId);
+  const message = formatStartMessage(triggerId);
 
   return Dialog.open(teamId, message);
 };

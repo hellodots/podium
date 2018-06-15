@@ -1,20 +1,14 @@
-export const formatLeaderboard = (challenge, leaderboard) => {
-  // Pretty print leaderboard
-  const fields = leaderboard.map(item => {
-    const [userId, points] = item;
-    return {
-      value: `<@${userId}> ..... ${points}`
-    };
-  });
+export const formatLeaderboard = leaderboards =>
+  leaderboards.map(leaderboard => {
+    // Pretty print leaderboard
+    const fields = leaderboard.map((userId, score) => ({
+      value: `<@${userId}> ..... ${score}`
+    }));
 
-  const attachments = [
-    {
-      fallback: `${challenge.title} leaderboard`,
-      title: `${challenge.title} leaderboard`,
+    return {
+      fallback: `${leaderboard.metric} leaderboard`,
+      title: `${leaderboard.metric} leaderboard`,
       color: "#2eb886",
       fields: fields
-    }
-  ];
-
-  return attachments;
-};
+    };
+  });

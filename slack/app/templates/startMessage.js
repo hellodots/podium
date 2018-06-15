@@ -1,4 +1,4 @@
-export const startMessage = triggerId => ({
+export const formatStartMessage = triggerId => ({
   trigger_id: triggerId,
   dialog: {
     callback_id: "start_submission",
