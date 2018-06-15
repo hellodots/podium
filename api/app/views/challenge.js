@@ -3,15 +3,34 @@ import { Activity } from "../models/activity";
 
 export class ChallengeView {
   static async create(req, res) {
-    const { channelId, teamId, userId, metric } = req.body;
+    const {
+      channelId,
+      teamId,
+      userId,
+      title,
+      option1,
+      option2,
+      option3
+    } = req.body;
 
     // Team id and channel id are required
     if (!teamId || !channelId) {
       res.status(400).end("Team ID and Channel ID are required");
     }
-
     const teamChannelId = `${teamId}-${channelId}`;
-    const newChallenge = new Challenge(teamChannelId, userId, metric, true);
+
+    // Create metrics array with unique options provided
+    const metrics = [
+      ...new Set([option1, option2, option3].filter(val => !!val))
+    ];
+
+    const newChallenge = new Challenge(
+      teamChannelId,
+      userId,
+      title,
+      metrics,
+      true
+    );
 
     try {
       const createdChallenge = await newChallenge.put();
@@ -71,7 +90,7 @@ export class ChallengeView {
 
   static async update(req, res) {
     const { id: challengeId } = req.params;
-    const { teamId, channelId, active, metric } = req.body;
+    const { teamId, channelId, active, title, metrics } = req.body;
 
     // Team id and channel id are required
     if (!teamId || !channelId) {
@@ -95,8 +114,12 @@ export class ChallengeView {
       fetchedChallenge.active = active;
     }
 
-    if (metric) {
-      fetchedChallenge.metric = metric;
+    if (title) {
+      fetchedChallenge.title = title;
+    }
+
+    if (metrics) {
+      fetchedChallenge.metrics = metrics;
     }
 
     // Update challenge
@@ -118,23 +141,38 @@ export class ChallengeView {
       res.status(400).end(error.message);
     }
 
-    // Group activities by user
-    const scores = activities.reduce((acc, activity) => {
-      const { teamUserId } = activity;
+    // Group activities by metric
+    const metrics = activities.reduce((acc, activity) => {
+      const { metric, teamUserId } = activity;
       // Split the userTeamId and get the userId
       const userId = teamUserId.split("-")[1];
 
-      // TEMP: Increment the number of points by 1 for each activity
-      if (acc.has(userId)) {
-        acc.set(userId, acc.get(userId) + 1);
+      if (acc.has(metric)) {
+        const scores = acc.get(metric);
+
+        // TODO: Temp increment the number of points by 1 for each activity
+        if (scores.has(userId)) {
+          scores.set(userId, scores.get(userId) + 1);
+        } else {
+          scores.set(userId, 1);
+        }
       } else {
-        acc.set(userId, 1);
+        acc.set(metric, new Map([[userId, 1]]));
       }
       return acc;
     }, new Map());
 
     // Sort user scores
-    const leaderboard = [...scores.entries()].sort((a, b) => b[1] - a[1]);
+    const leaderboard = [...metrics.entries()].map(([metric, scores]) => {
+      const sortedScores = [...scores.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .map(([userId, score]) => ({ userId, score }));
+
+      return {
+        metric: metric,
+        leaderboard: sortedScores
+      };
+    });
 
     return res.json(leaderboard).end();
   }
