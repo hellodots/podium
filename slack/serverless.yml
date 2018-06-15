@@ -37,8 +37,6 @@ functions:
     description: Slack command controller
     events:
       - sns: ${self:custom.commandControllerTopic}
-    environment:
-      SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
   command-router:
     handler: app/routers/commandRouter.handler
     name: ${self:service}-command-router-${self:provider.stage}
@@ -57,8 +55,6 @@ functions:
     description: Slack action controller
     events:
       - sns: ${self:custom.actionControllerTopic}
-    environment:
-      SLACK_BOT_TOKEN: ${self:custom.slackBotToken}
   action-router:
     handler: app/routers/actionRouter.handler
     name: ${self:service}-action-router-${self:provider.stage}
@@ -98,8 +94,6 @@ custom:
   commandControllerTopic: commandController
 
   # Slack
-  # TODO: delete bot token
-  slackBotToken: ${file(env/${self:provider.stage}.yml):SLACK_BOT_TOKEN}
   slackClientId: ${file(env/${self:provider.stage}.yml):SLACK_CLIENT_ID}
   slackClientSecret: ${file(env/${self:provider.stage}.yml):SLACK_CLIENT_SECRET}
   slackVerificationToken: ${file(env/${self:provider.stage}.yml):SLACK_VERIFICATION_TOKEN}
