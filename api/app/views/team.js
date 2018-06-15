@@ -24,7 +24,7 @@ export class TeamView {
 
     try {
       const fetchedTeam = await Team.getTeam(teamId);
-      res.json(fetchedChallenge).end();
+      res.json(fetchedTeam).end();
     } catch (error) {
       console.log(error);
       res.status(400).end(error.message);

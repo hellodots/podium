@@ -4,12 +4,17 @@ import { Model } from "./model";
 const { TEAM_TABLE } = process.env;
 
 export class Team extends Model {
-  constructor(teamId, teamName, token) {
+  constructor(teamId, token, teamName) {
     super();
     this.teamId = teamId;
     this.token = token;
     this.teamName = teamName;
     this.createdAt = Date.now();
+  }
+
+  static async getTeam(teamId) {
+    const fetchTeam = new Team(teamId);
+    return fetchTeam.get();
   }
 }
 

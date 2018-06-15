@@ -1,14 +1,23 @@
 const { WebClient } = require("@slack/client");
+import { apiRequestUtil } from "../request";
 
 export class Dialog {
-  constructor(dialog) {
-    this.dialog = dialog;
-  }
+  static async open(teamId, message) {
+    let team;
+    try {
+      team = await apiRequestUtil.getTeam(teamId);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    const token = team.token;
 
-  open(message) {
-    return this.dialog.open(message);
+    if (!token) {
+      // TODO: return error somehow
+      console.log("no token found error");
+      return;
+    }
+    const web = new WebClient(token);
+    return web.dialog.open(message);
   }
 }
-
-const web = new WebClient(process.env.SLACK_BOT_TOKEN);
-export const dialogUtil = new Dialog(web.dialog);
