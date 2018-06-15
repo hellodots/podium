@@ -28,9 +28,6 @@ slackInteractions.action("start_submission", async (payload, respond) => {
 
   try {
     await sns.publish(params).promise();
-    await respond({
-      text: `Ok`
-    });
   } catch (error) {
     await respond({
       text: "Failed to send publish to SNS"
