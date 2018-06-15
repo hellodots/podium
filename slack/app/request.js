@@ -88,6 +88,18 @@ export class APIRequest extends Request {
       userId
     });
   }
+
+  createTeam(teamId, token, teamName) {
+    return this.post("teams", {
+      teamId,
+      token,
+      teamName
+    });
+  }
+
+  getTeam(teamId) {
+    return this.get(`teams/${teamId}`);
+  }
 }
 
 export const apiRequestUtil = new APIRequest(axios, process.env.API_BASE);

@@ -1,4 +1,4 @@
-import { dialogUtil } from "../client/dialog";
+import { Dialog } from "../client/dialog";
 import { apiRequestUtil, requestUtil } from "../request";
 
 export const start = async (channelId, teamId, responseUrl, triggerId) => {
@@ -39,5 +39,5 @@ export const start = async (channelId, teamId, responseUrl, triggerId) => {
     }
   };
 
-  return dialogUtil.open(message);
+  return Dialog.open(teamId, message);
 };

@@ -4,12 +4,13 @@ import bodyParser from "body-parser";
 
 import { ChallengeView } from "./views/challenge";
 import { ActivityView } from "./views/activity";
+import { TeamView } from "./views/team";
 
 const app = express();
 app.use(bodyParser.json({ strict: false }));
 
 /****************
-Challenge Routes 
+Challenge Routes
 ****************/
 
 // Create challenge
@@ -28,7 +29,7 @@ app.put("/api/challenges/:id", ChallengeView.update);
 app.get("/api/challenges/:id/leaderboard", ChallengeView.getLeaderboard);
 
 /****************
-Activity Routes 
+Activity Routes
 ****************/
 
 // Create activity
@@ -36,5 +37,15 @@ app.post("/api/activities", ActivityView.create);
 
 // Get activities
 app.get("/api/activities", ActivityView.query);
+
+/****************
+Team Routes
+****************/
+
+// Create team
+app.post("/api/teams", TeamView.create);
+
+// Get team
+app.get("/api/teams/:id", TeamView.get);
 
 export const handler = serverless(app);
