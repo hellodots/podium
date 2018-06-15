@@ -40,7 +40,7 @@ export const end = async (channelId, teamId, responseUrl, userId) => {
     message[
       "text"
     ] = `<!here> That's a wrap! :tada: :sports_medal: <@${userId}> has ended the challenge for \`${
-      updatedChallenge.metric
+      updatedChallenge.title
     }\`!`;
   } catch (error) {
     console.log(error);

@@ -56,7 +56,10 @@ Object.defineProperties(Challenge.prototype, {
       createdAt: { type: "String" },
       userId: { type: "String" },
       title: { type: "String", defaultProvider: "Podium Challenge" },
-      metrics: { type: "Tuple", members: [{ type: "String" }] },
+      metrics: {
+        type: "Tuple",
+        members: [{ type: "String" }, { type: "String" }, { type: "String" }]
+      },
       active: {
         type: "Boolean",
         defaultProvider: true

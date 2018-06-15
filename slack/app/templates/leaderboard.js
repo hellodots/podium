@@ -1,5 +1,3 @@
-import { apiRequestUtil } from "../request";
-
 export const formatLeaderboard = (challenge, leaderboard) => {
   // Pretty print leaderboard
   const fields = leaderboard.map(item => {
@@ -11,8 +9,8 @@ export const formatLeaderboard = (challenge, leaderboard) => {
 
   const attachments = [
     {
-      fallback: `${challenge.metric} leaderboard`,
-      title: `${challenge.metric} leaderboard`,
+      fallback: `${challenge.title} leaderboard`,
+      title: `${challenge.title} leaderboard`,
       color: "#2eb886",
       fields: fields
     }

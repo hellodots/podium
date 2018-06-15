@@ -8,9 +8,9 @@ export class ChallengeView {
       teamId,
       userId,
       title,
-      option1,
-      option2,
-      option3
+      metric1,
+      metric2,
+      metric3
     } = req.body;
 
     // Team id and channel id are required
@@ -19,9 +19,9 @@ export class ChallengeView {
     }
     const teamChannelId = `${teamId}-${channelId}`;
 
-    // Create metrics array with unique options provided
+    // Create metrics array with unique metrics provided
     const metrics = [
-      ...new Set([option1, option2, option3].filter(val => !!val))
+      ...new Set([metric1, metric2, metric3].filter(val => !!val))
     ];
 
     const newChallenge = new Challenge(

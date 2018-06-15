@@ -46,12 +46,15 @@ export class APIRequest extends Request {
     return super.request(method, `${this.baseURL}${url}`, params, data);
   }
 
-  createChallenge(channelId, teamId, userId, metric, duration) {
+  createChallenge(channelId, teamId, userId, title, metric1, metric2, metric3) {
     return this.post("challenges", {
       channelId,
       teamId,
       userId,
-      metric
+      title,
+      metric1,
+      metric2,
+      metric3
     });
   }
 

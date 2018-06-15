@@ -13,7 +13,10 @@ export const startSubmission = async (
       channelId,
       teamId,
       userId,
-      submission.metric
+      submission.title,
+      submission.metric1,
+      submission.metric2,
+      submission.metric3
     );
 
     const message = {
@@ -23,10 +26,10 @@ export const startSubmission = async (
       attachments: [
         {
           fallback: "How to participate",
-          title: `Metric: ${challenge.metric}`,
-          text: `Type \`/score\` followed by the deal name (eg. */score Acme Corp*) for every _${
-            challenge.metric
-          }_ to track your progress and \`/podium rank\` to view the leaderboard instantly. \n\n Good luck!`
+          title: `${challenge.title}`,
+          text: `Type \`/score\` followed by the deal name (eg. */score Acme Corp*) for every _${challenge.metrics.join(
+            ", "
+          )}_ to track your progress and \`/podium rank\` to view the leaderboard instantly. \n\n Good luck!`
         }
       ]
     };

@@ -1,5 +1,6 @@
 import { Dialog } from "../client/dialog";
 import { apiRequestUtil, requestUtil } from "../request";
+import { startMessage } from "../templates/startMessage";
 
 export const start = async (channelId, teamId, responseUrl, triggerId) => {
   // Check for existing challenge
@@ -21,23 +22,7 @@ export const start = async (channelId, teamId, responseUrl, triggerId) => {
   }
 
   // No active challenge was found, continue with dialog
-  const message = {
-    trigger_id: triggerId,
-    dialog: {
-      callback_id: "start_submission",
-      title: "Start a challenge",
-      submit_label: "Start",
-      elements: [
-        {
-          type: "text",
-          label: "Metric description",
-          name: "metric",
-          hint: "What metric would you like to track?",
-          placeholder: "eg: Deals created"
-        }
-      ]
-    }
-  };
+  const message = startMessage(triggerId);
 
   return Dialog.open(teamId, message);
 };
