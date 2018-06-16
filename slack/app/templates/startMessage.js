@@ -17,8 +17,7 @@ export const formatStartMessage = triggerId => ({
         label: "Metric 1",
         name: "metric1",
         hint: "What metric would you like to track?",
-        placeholder: "eg: Calls made",
-        optional: true
+        placeholder: "eg: Calls made"
       },
       {
         type: "text",

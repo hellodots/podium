@@ -13,6 +13,16 @@ const {
 
 const sns = new AWS.SNS();
 
+const publishToSNS = payload => {
+  // Trigger action controller
+  const params = {
+    Message: JSON.stringify(payload),
+    TopicArn: `${AWS_SNS_ARN}:${ACTION_CONTROLLER_TOPIC}`
+  };
+
+  return sns.publish(params).promise();
+};
+
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -20,14 +30,18 @@ const slackInteractions = createMessageAdapter(SLACK_VERIFICATION_TOKEN);
 app.use("/slack/actions", slackInteractions.expressMiddleware());
 
 slackInteractions.action("start_submission", async (payload, respond) => {
-  // Trigger action controller
-  const params = {
-    Message: JSON.stringify(payload),
-    TopicArn: `${AWS_SNS_ARN}:${ACTION_CONTROLLER_TOPIC}`
-  };
-
   try {
-    await sns.publish(params).promise();
+    await publishToSNS(payload);
+  } catch (error) {
+    await respond({
+      text: "Failed to send publish to SNS"
+    });
+  }
+});
+
+slackInteractions.action("score_submission", async (payload, respond) => {
+  try {
+    await publishToSNS(payload);
   } catch (error) {
     await respond({
       text: "Failed to send publish to SNS"

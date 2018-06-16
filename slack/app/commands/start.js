@@ -8,12 +8,10 @@ export const start = async (channelId, teamId, responseUrl, triggerId) => {
   try {
     challenges = await apiRequestUtil.getChallenges(channelId, teamId, 1);
   } catch (error) {
-    console.log(error);
     // Message the error to the user
-    return requestUtil.post(responseUrl, {
-      text: error
-    });
+    return requestUtil.post(responseUrl, { text: error });
   }
+
   if (challenges.length > 0) {
     // Found an existing active challenge in channel
     return requestUtil.post(responseUrl, {

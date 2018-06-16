@@ -66,6 +66,10 @@ export class APIRequest extends Request {
     });
   }
 
+  getActiveChallenge(channelId, teamId) {
+    return this.get("active-challenge", { channelId, teamId });
+  }
+
   updateChallenge(challengeId, channelId, teamId, active) {
     return this.put(`challenges/${challengeId}`, { channelId, teamId, active });
   }
@@ -74,13 +78,14 @@ export class APIRequest extends Request {
     return this.get(`challenges/${challengeId}/leaderboard`);
   }
 
-  createActivity(challengeId, channelId, teamId, userId, deal) {
+  createActivity(challengeId, channelId, teamId, userId, deal, metric) {
     return this.post("activities", {
       challengeId,
       channelId,
       teamId,
       userId,
-      deal
+      deal,
+      metric
     });
   }
 

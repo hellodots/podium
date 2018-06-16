@@ -27,9 +27,11 @@ export const startSubmission = async (
         {
           fallback: "How to participate",
           title: `${challenge.title}`,
-          text: `Type \`/score\` followed by the deal name (eg. */score Acme Corp*) for every _${challenge.metrics.join(
-            ", "
-          )}_ to track your progress and \`/podium rank\` to view the leaderboard instantly. \n\n Good luck!`
+          text: `Type \`/score\` followed by the deal name (eg. */score Acme Corp*) for every _${challenge.metrics
+            .filter(metric => !!metric)
+            .join(
+              ", "
+            )}_ to track your progress and \`/podium rank\` to view the leaderboard instantly. \n\n Good luck!`
         }
       ]
     };

@@ -6,13 +6,14 @@ import { Model } from "./model";
 const { ACTIVITY_TABLE } = process.env;
 
 export class Activity extends Model {
-  constructor(challengeId, teamUserId, deal) {
+  constructor(challengeId, teamUserId, deal, metric) {
     super();
     this.challengeId = challengeId;
     this.activityId = uuidv4();
     this.createdAt = Date.now();
     this.teamUserId = teamUserId;
     this.deal = deal;
+    this.metric = metric;
   }
 
   // HACK: temp solution for querying on the model
@@ -57,7 +58,8 @@ Object.defineProperties(Activity.prototype, {
       },
       createdAt: { type: "String" },
       teamUserId: { type: "String" },
-      deal: { type: "String" }
+      deal: { type: "String" },
+      metric: { type: "String" }
     }
   }
 });

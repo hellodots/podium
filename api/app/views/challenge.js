@@ -20,9 +20,7 @@ export class ChallengeView {
     const teamChannelId = `${teamId}-${channelId}`;
 
     // Create metrics array with unique metrics provided
-    const metrics = [
-      ...new Set([metric1, metric2, metric3].filter(val => !!val))
-    ];
+    const metrics = [metric1, metric2 ? metric2 : "", metric3 ? metric3 : ""];
 
     const newChallenge = new Challenge(
       teamChannelId,
@@ -58,6 +56,32 @@ export class ChallengeView {
     } catch (error) {
       console.log(error);
       res.status(400).end(error.message);
+    }
+  }
+
+  static async getActiveChallenge(req, res) {
+    const { teamId, channelId } = req.query;
+
+    // If no query params, return an error
+    if (!teamId || !channelId) {
+      res.status(400).end("teamId and channelId are required");
+    }
+
+    let challenges;
+    try {
+      challenges = await Challenge.query(`${teamId}-${channelId}`, true);
+    } catch (error) {
+      res.status(400).end(error.message);
+    }
+
+    if (challenges.length === 0) {
+      res.status(400).end(`There's no active challenge in <#${channelId}>`);
+    } else if (challenges.length > 1) {
+      res
+        .status(400)
+        .end(`There are multiple active challenges in <#${channelId}>`);
+    } else {
+      res.json(challenges[0]).end();
     }
   }
 
@@ -168,8 +192,14 @@ export class ChallengeView {
         .sort((a, b) => b[1] - a[1])
         .map(([userId, score]) => ({ userId, score }));
 
+      const sumScores = sortedScores.reduce(
+        (acc, { userId, score }) => acc + score,
+        0
+      );
+
       return {
         metric: metric,
+        total: sumScores,
         leaderboard: sortedScores
       };
     });
