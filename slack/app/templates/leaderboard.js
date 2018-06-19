@@ -2,18 +2,21 @@ import { apiRequestUtil } from "../request";
 
 export const formatLeaderboard = (challenge, leaderboard) => {
   // Pretty print leaderboard
-  const fields = leaderboard.map(item => {
+  let total = 0;
+  const fields = leaderboard.map((item, index) => {
     const [userId, points] = item;
+    total += points;
+    const rank = index + 1;
     return {
-      value: `<@${userId}> ..... ${points}`
+      value: `#${rank}: <@${userId}> (${points} points)`
     };
   });
 
   const attachments = [
     {
-      fallback: `${challenge.metric} leaderboard`,
-      title: `${challenge.metric} leaderboard`,
-      color: "#2eb886",
+      fallback: `Team total: ${total} ${challenge.metric}`,
+      title: `Team total: ${total} ${challenge.metric}`,
+      color: "#a137e8",
       fields: fields
     }
   ];
