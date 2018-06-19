@@ -38,7 +38,7 @@ export const scoreSubmission = async (
   const message = {
     response_type: "in_channel",
     text: `<@${userId}> just scored \`${createdActivity.metric}\`${
-      createdActivity.deal ? ` with ${createdActivity.deal}` : ""
+      createdActivity.deal ? ` with *${createdActivity.deal}*` : ""
     }!`
   };
   return requestUtil.post(responseUrl, message);

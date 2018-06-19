@@ -9,32 +9,33 @@ export const formatStartMessage = triggerId => ({
         type: "text",
         label: "Title",
         name: "title",
-        hint: "What is your goal?",
-        placeholder: "eg: 30 day sprint"
+        hint: "When does this challenge start/end??",
+        placeholder: "eg: July sprint"
       },
       {
         type: "text",
-        label: "Metric 1",
+        label: "Primary Metric",
         name: "metric1",
-        hint: "What metric would you like to track?",
-        placeholder: "eg: Calls made"
+        hint: "What is the most important key activity to track?",
+        placeholder: "eg: Deals won"
       },
       {
         type: "text",
-        label: "Metric 2",
+        label: "Secondary Metric",
         name: "metric2",
-        hint: "What metric would you like to track?",
+        hint: "What is another key activity?",
         placeholder: "eg: Deals created",
         optional: true
-      },
-      {
-        type: "text",
-        label: "Metric 3",
-        name: "metric3",
-        hint: "What metric would you like to track?",
-        placeholder: "eg: Deals closed",
-        optional: true
       }
+      // TODO: Hide for now until user request
+      // {
+      //   type: "text",
+      //   label: "3rd Metric",
+      //   name: "metric3",
+      //   hint: "What metric would you like to track?",
+      //   placeholder: "eg: Deals closed",
+      //   optional: true
+      // }
     ]
   }
 });

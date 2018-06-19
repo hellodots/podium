@@ -8,10 +8,10 @@ export const formatScoreMessage = (challenge, deal) => {
   }));
 
   return {
-    text: `Good job scoring${deal ? ` with _${deal}_` : ""}!`,
+    text: `Nice one ${deal ? ` with _${deal}_` : ""}!`,
     attachments: [
       {
-        text: "Which metric did you hit?",
+        text: "Which metric you just score?",
         fallback: "You are unable to pick a metric",
         callback_id: "score_submission",
         color: "#3AA3E3",

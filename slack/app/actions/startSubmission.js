@@ -22,16 +22,29 @@ export const startSubmission = async (
     const message = {
       channel: channelId,
       response_type: "in_channel",
-      text: `<!here> <@${challenge.userId}> has started a new challenge!`,
+      text: `<!here> <@${
+        challenge.userId
+      }> has started a new challenge called ${challenge.title}!`,
       attachments: [
         {
           fallback: "How to participate",
-          title: `${challenge.title}`,
-          text: `Type \`/score\` followed by the deal name (eg. */score Acme Corp*) for every _${challenge.metrics
-            .filter(metric => !!metric)
-            .join(
-              ", "
-            )}_ to track your progress and \`/podium rank\` to view the leaderboard instantly. \n\n Good luck!`
+          title: "Here's how it works",
+          fields: [
+            {
+              value: `- Type \`/score\` followed by the deal name (eg. /score Acme Corp) for every *${challenge.metrics
+                .filter(metric => !!metric)
+                .join("* or *")}* to track your progress.`
+            },
+            {
+              value: `- Type \`/podium rank\` to view the leaderboard instantly.`
+            },
+            {
+              value: `- Type \`/podium end\` to wrap up and declare the winner(s).`
+            },
+            {
+              value: `Don't forget to cheer or chirp each other on :stuck_out_tongue_winking_eye: good luck and have fun!`
+            }
+          ]
         }
       ]
     };
