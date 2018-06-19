@@ -1,4 +1,5 @@
 import { startSubmission } from "../actions/startSubmission";
+import { scoreSubmission } from "../actions/scoreSubmission";
 
 export const handler = async (event, context, callback) => {
   const message = JSON.parse(event.Records[0].Sns.Message);
@@ -14,6 +15,9 @@ export const handler = async (event, context, callback) => {
   switch (callbackId) {
     case "start_submission":
       req = startSubmission(channelId, teamId, userId, submission, responseUrl);
+      break;
+    case "score_submission":
+      req = scoreSubmission(channelId, teamId, userId, actions, responseUrl);
       break;
     default:
       console.log("Invalid event callback id");

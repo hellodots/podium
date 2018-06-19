@@ -2,7 +2,7 @@ import { Activity } from "../models/activity";
 
 export class ActivityView {
   static async create(req, res) {
-    const { challengeId, teamId, userId, deal } = req.body;
+    const { challengeId, teamId, userId, deal, metric } = req.body;
 
     // Challenge id, team id, and user id are required
     if (!challengeId || !teamId || !userId) {
@@ -10,7 +10,7 @@ export class ActivityView {
     }
 
     const teamUserId = `${teamId}-${userId}`;
-    const newActivity = new Activity(challengeId, teamUserId, deal);
+    const newActivity = new Activity(challengeId, teamUserId, deal, metric);
 
     try {
       const createdActivity = await newActivity.put();

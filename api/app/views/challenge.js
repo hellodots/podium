@@ -3,15 +3,32 @@ import { Activity } from "../models/activity";
 
 export class ChallengeView {
   static async create(req, res) {
-    const { channelId, teamId, userId, metric } = req.body;
+    const {
+      channelId,
+      teamId,
+      userId,
+      title,
+      metric1,
+      metric2,
+      metric3
+    } = req.body;
 
     // Team id and channel id are required
     if (!teamId || !channelId) {
       res.status(400).end("Team ID and Channel ID are required");
     }
-
     const teamChannelId = `${teamId}-${channelId}`;
-    const newChallenge = new Challenge(teamChannelId, userId, metric, true);
+
+    // Create metrics array with unique metrics provided
+    const metrics = [metric1, metric2 ? metric2 : "", metric3 ? metric3 : ""];
+
+    const newChallenge = new Challenge(
+      teamChannelId,
+      userId,
+      title,
+      metrics,
+      true
+    );
 
     try {
       const createdChallenge = await newChallenge.put();
@@ -39,6 +56,32 @@ export class ChallengeView {
     } catch (error) {
       console.log(error);
       res.status(400).end(error.message);
+    }
+  }
+
+  static async getActiveChallenge(req, res) {
+    const { teamId, channelId } = req.query;
+
+    // If no query params, return an error
+    if (!teamId || !channelId) {
+      res.status(400).end("teamId and channelId are required");
+    }
+
+    let challenges;
+    try {
+      challenges = await Challenge.query(`${teamId}-${channelId}`, true);
+    } catch (error) {
+      res.status(400).end(error.message);
+    }
+
+    if (challenges.length === 0) {
+      res.status(400).end(`There's no active challenge in <#${channelId}>`);
+    } else if (challenges.length > 1) {
+      res
+        .status(400)
+        .end(`There are multiple active challenges in <#${channelId}>`);
+    } else {
+      res.json(challenges[0]).end();
     }
   }
 
@@ -71,7 +114,7 @@ export class ChallengeView {
 
   static async update(req, res) {
     const { id: challengeId } = req.params;
-    const { teamId, channelId, active, metric } = req.body;
+    const { teamId, channelId, active, title, metrics } = req.body;
 
     // Team id and channel id are required
     if (!teamId || !channelId) {
@@ -95,8 +138,12 @@ export class ChallengeView {
       fetchedChallenge.active = active;
     }
 
-    if (metric) {
-      fetchedChallenge.metric = metric;
+    if (title) {
+      fetchedChallenge.title = title;
+    }
+
+    if (metrics) {
+      fetchedChallenge.metrics = metrics;
     }
 
     // Update challenge
@@ -118,23 +165,44 @@ export class ChallengeView {
       res.status(400).end(error.message);
     }
 
-    // Group activities by user
-    const scores = activities.reduce((acc, activity) => {
-      const { teamUserId } = activity;
+    // Group activities by metric
+    const metrics = activities.reduce((acc, activity) => {
+      const { metric, teamUserId } = activity;
       // Split the userTeamId and get the userId
       const userId = teamUserId.split("-")[1];
 
-      // TEMP: Increment the number of points by 1 for each activity
-      if (acc.has(userId)) {
-        acc.set(userId, acc.get(userId) + 1);
+      if (acc.has(metric)) {
+        const scores = acc.get(metric);
+
+        // TODO: Temp increment the number of points by 1 for each activity
+        if (scores.has(userId)) {
+          scores.set(userId, scores.get(userId) + 1);
+        } else {
+          scores.set(userId, 1);
+        }
       } else {
-        acc.set(userId, 1);
+        acc.set(metric, new Map([[userId, 1]]));
       }
       return acc;
     }, new Map());
 
     // Sort user scores
-    const leaderboard = [...scores.entries()].sort((a, b) => b[1] - a[1]);
+    const leaderboard = [...metrics.entries()].map(([metric, scores]) => {
+      const sortedScores = [...scores.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .map(([userId, score]) => ({ userId, score }));
+
+      const sumScores = sortedScores.reduce(
+        (acc, { userId, score }) => acc + score,
+        0
+      );
+
+      return {
+        metric: metric,
+        total: sumScores,
+        leaderboard: sortedScores
+      };
+    });
 
     return res.json(leaderboard).end();
   }

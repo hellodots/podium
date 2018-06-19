@@ -6,13 +6,14 @@ import { Model } from "./model";
 const { CHALLENGE_TABLE } = process.env;
 
 export class Challenge extends Model {
-  constructor(teamChannelId, userId, metric, active = true) {
+  constructor(teamChannelId, userId, title, metrics, active = true) {
     super();
     this.teamChannelId = teamChannelId;
     this.challengeId = uuidv4();
     this.createdAt = Date.now();
     this.userId = userId;
-    this.metric = metric;
+    this.title = title;
+    this.metrics = metrics;
     this.active = active;
   }
 
@@ -54,7 +55,11 @@ Object.defineProperties(Challenge.prototype, {
       },
       createdAt: { type: "String" },
       userId: { type: "String" },
-      metric: { type: "String" },
+      title: { type: "String", defaultProvider: "Podium Challenge" },
+      metrics: {
+        type: "Tuple",
+        members: [{ type: "String" }, { type: "String" }, { type: "String" }]
+      },
       active: {
         type: "Boolean",
         defaultProvider: true

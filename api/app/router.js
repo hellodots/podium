@@ -28,6 +28,9 @@ app.put("/api/challenges/:id", ChallengeView.update);
 // Get challenge leaderboard
 app.get("/api/challenges/:id/leaderboard", ChallengeView.getLeaderboard);
 
+// Get active challenge
+app.get("/api/active-challenge", ChallengeView.getActiveChallenge);
+
 /****************
 Activity Routes
 ****************/
