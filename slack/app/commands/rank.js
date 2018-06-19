@@ -34,6 +34,7 @@ export const rank = async (channelId, teamId, responseUrl, triggerId) => {
       teamId
     );
     message["response_type"] = "in_channel";
+    message["text"] = "Here's the current leaderboard";
     message["attachments"] = formatLeaderboard(challenge, rawLeaderboard);
   } catch (error) {
     console.log(error);
