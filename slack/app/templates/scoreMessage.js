@@ -8,7 +8,7 @@ export const formatScoreMessage = (challenge, deal) => {
   }));
 
   return {
-    text: `Nice one ${deal ? ` with _${deal}_` : ""}!`,
+    text: `Nice one ${deal ? `with _${deal}_` : ""}!`,
     attachments: [
       {
         text: "Which metric you just score?",
