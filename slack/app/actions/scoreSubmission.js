@@ -1,4 +1,5 @@
 import { apiRequestUtil, requestUtil } from "../request";
+import { Chat } from "../client/chat";
 
 export const scoreSubmission = async (
   channelId,
@@ -32,14 +33,17 @@ export const scoreSubmission = async (
     return requestUtil.post(responseUrl, { text: error });
   }
 
+  // Delete original message with button
+  requestUtil.post(responseUrl, { delete_original: "true" });
+
   // Notify channel of new activty
-  // TODO: Might not be able to post in channel after using interacitve buttons
-  // Might have to use the chat client
   const message = {
+    channel: channelId,
     response_type: "in_channel",
     text: `<@${userId}> just scored \`${createdActivity.metric}\`${
       createdActivity.deal ? ` with *${createdActivity.deal}*` : ""
     }!`
   };
-  return requestUtil.post(responseUrl, message);
+
+  return Chat.postMessage(teamId, message);
 };
